@@ -1,0 +1,7 @@
+PyQt6>=6.6.0
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+
+# AI libraries are optional - install separately with requirements_ai.txt
+# openai-whisper>=20231117
+# pysubs2>=1.6.0

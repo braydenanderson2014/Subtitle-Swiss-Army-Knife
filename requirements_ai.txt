@@ -1,0 +1,6 @@
+# AI Subtitle Generation Libraries (Optional)
+# These libraries enable automatic subtitle generation using Whisper AI
+# Install with: pip install -r requirements_ai.txt
+
+openai-whisper>=20231117
+pysubs2>=1.6.0
