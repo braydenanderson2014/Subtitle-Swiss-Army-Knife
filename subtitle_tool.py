@@ -16,6 +16,7 @@ Notes:
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import os
 import re
@@ -29,7 +30,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional
+from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 from xml.etree import ElementTree
 
 try:
@@ -99,6 +100,40 @@ try:
     import pysubs2
 except ImportError:
     pysubs2 = None  # type: ignore[assignment]
+
+
+def probe_ai_runtime() -> Tuple[bool, List[str], Dict[str, str]]:
+    """Probe AI dependencies in the *current* interpreter at runtime."""
+    global whisper, pysubs2
+
+    missing: List[str] = []
+    details: Dict[str, str] = {}
+
+    try:
+        torch_mod = importlib.import_module("torch")
+        details["torch"] = str(getattr(torch_mod, "__version__", "installed"))
+    except Exception as exc:
+        missing.append("openai-whisper / torch")
+        details["torch_error"] = f"{type(exc).__name__}: {exc}"
+
+    try:
+        whisper_mod = importlib.import_module("whisper")
+        whisper = whisper_mod  # type: ignore[assignment]
+        details["whisper"] = str(getattr(whisper_mod, "__version__", "installed"))
+    except Exception as exc:
+        if "openai-whisper / torch" not in missing:
+            missing.append("openai-whisper / torch")
+        details["whisper_error"] = f"{type(exc).__name__}: {exc}"
+
+    try:
+        pysubs2_mod = importlib.import_module("pysubs2")
+        pysubs2 = pysubs2_mod  # type: ignore[assignment]
+        details["pysubs2"] = str(getattr(pysubs2_mod, "VERSION", "installed"))
+    except Exception as exc:
+        missing.append("pysubs2")
+        details["pysubs2_error"] = f"{type(exc).__name__}: {exc}"
+
+    return len(missing) == 0, missing, details
 
 VIDEO_EXTENSIONS = {
     ".mp4",
@@ -1249,7 +1284,8 @@ class SubtitleProcessor:
                 summary.details.append({
                     "file": str(video),
                     "status": "skipped",
-                    "reason": f"subtitle file already exists: {output_path.name}"
+                    "reason": f"subtitle file already exists: {output_path.name}",
+                    "output_path": str(output_path)
                 })
                 continue
             
@@ -1277,12 +1313,14 @@ class SubtitleProcessor:
                 
                 detected_lang = result.get("language", "unknown")
                 self._log(f"  Generated {output_path.name} (language: {detected_lang})")
+                self._log(f"  Saved subtitle to: {output_path}")
                 
                 summary.processed += 1
                 summary.details.append({
                     "file": str(video),
                     "status": "generated",
-                    "reason": f"created {output_path.name} with {len(result['segments'])} segments"
+                    "reason": f"created {output_path.name} with {len(result['segments'])} segments",
+                    "output_path": str(output_path)
                 })
             
             except Exception as e:
@@ -2177,12 +2215,31 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 settings["use_ai"] = use_ai
                 self._save_settings(settings)
             
-            # Use saved setting, default to True if whisper is installed
-            default_ai = whisper is not None
-            self.use_ai = settings.get("use_ai", default_ai)
+            self.ai_runtime_available, self.ai_missing_dependencies, self.ai_probe_details = probe_ai_runtime()
+
+            # Use saved setting, default to enabled only when runtime dependencies are available.
+            default_ai = self.ai_runtime_available
+            requested_ai = bool(settings.get("use_ai", default_ai))
+            self.ai_requested_but_unavailable = requested_ai and not self.ai_runtime_available
+
+            # Show AI controls only when AI is both requested and importable in this venv.
+            self.use_ai = requested_ai and self.ai_runtime_available
             
             self._apply_theme()
             self._build_ui()
+            self._log(f"Python executable: {sys.executable}")
+            self._log(f"Script path: {Path(__file__).resolve()}")
+            if self.ai_runtime_available:
+                self._log("AI runtime dependencies detected in current environment.")
+            elif self.ai_requested_but_unavailable:
+                missing = ", ".join(self.ai_missing_dependencies)
+                self._log(f"AI requested but unavailable in current environment (missing: {missing}).")
+                if "torch_error" in self.ai_probe_details:
+                    self._log(f"torch import error: {self.ai_probe_details['torch_error']}")
+                if "whisper_error" in self.ai_probe_details:
+                    self._log(f"whisper import error: {self.ai_probe_details['whisper_error']}")
+                if "pysubs2_error" in self.ai_probe_details:
+                    self._log(f"pysubs2 import error: {self.ai_probe_details['pysubs2_error']}")
             self._check_for_errors()
             self._check_first_run()
             self._load_ui_state()
@@ -2617,6 +2674,17 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 self.whisper_language_input = None
                 self.generate_button = None
 
+                if self.ai_requested_but_unavailable:
+                    tools_layout.addSpacing(10)
+                    missing = ", ".join(self.ai_missing_dependencies)
+                    ai_unavailable = QLabel(
+                        "AI subtitle generation is enabled in settings but not available in this Python environment.\n"
+                        f"Missing: {missing}\n"
+                        "Install with: pip install -r requirements_ai.txt"
+                    )
+                    ai_unavailable.setStyleSheet("color: #d9822b;")
+                    tools_layout.addWidget(ai_unavailable)
+
             button_row = QHBoxLayout()
             self.scan_button = QPushButton("Scan Videos")
             self.remove_button = QPushButton("Remove Embedded Subtitles")
@@ -2690,6 +2758,15 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                     "ffprobe binary not found on system PATH",
                     f"Expected location: {dep_check.get('ffprobe_path', 'Not found')}"
                 )
+
+            if self.ai_requested_but_unavailable:
+                missing = ", ".join(self.ai_missing_dependencies)
+                self._log(
+                    "WARNING: AI is enabled in settings but unavailable in this environment. "
+                    f"Missing: {missing}"
+                )
+                self._log(f"Current Python environment: {sys.executable}")
+                self._log("Install AI deps in this environment with: pip install -r requirements_ai.txt")
 
         def _log(self, message: str) -> None:
             ts = datetime.now().strftime("%H:%M:%S")
@@ -2985,6 +3062,33 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                     )
                 if count > preview_limit:
                     self._log(f"... {count - preview_limit} more file(s) not shown in log.")
+            elif action == "generate_subtitles":
+                self._log(
+                    "Finished {action}: scanned={scanned}, processed={processed}, "
+                    "skipped={skipped}, failed={failed}".format(
+                        action=action,
+                        scanned=result.get("scanned", 0),
+                        processed=result.get("processed", 0),
+                        skipped=result.get("skipped", 0),
+                        failed=result.get("failed", 0),
+                    )
+                )
+
+                details = result.get("details", [])
+                generated_paths: List[str] = []
+                if isinstance(details, list):
+                    for item in details:
+                        if not isinstance(item, dict):
+                            continue
+                        if item.get("status") == "generated":
+                            output_path = item.get("output_path")
+                            if isinstance(output_path, str) and output_path:
+                                generated_paths.append(output_path)
+
+                if generated_paths:
+                    self._log("Subtitle files saved to:")
+                    for path in generated_paths:
+                        self._log(f"- {path}")
             else:
                 self._log(
                     "Finished {action}: scanned={scanned}, processed={processed}, "

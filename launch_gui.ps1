@@ -16,6 +16,8 @@ if (-not (Test-Path $venvPython)) {
 }
 
 Write-Host "Launching Subtitle Tool GUI..." -ForegroundColor Cyan
+Write-Host "Using virtual environment Python: $venvPython" -ForegroundColor Gray
+Write-Host "Using subtitle script: $subtitleTool" -ForegroundColor Gray
 Write-Host ""
 
 & $venvPython $subtitleTool gui

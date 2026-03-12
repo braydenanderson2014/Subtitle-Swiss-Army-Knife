@@ -2,5 +2,9 @@
 # These libraries enable automatic subtitle generation using Whisper AI
 # Install with: pip install -r requirements_ai.txt
 
+# Use the PyTorch CPU wheel index and a conservative version range for Windows stability.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch>=2.5,<2.8
+
 openai-whisper>=20231117
 pysubs2>=1.6.0
