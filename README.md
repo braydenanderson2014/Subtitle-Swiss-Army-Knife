@@ -75,6 +75,19 @@ In GUI mode:
 - `Open Help` to view the integrated help documentation in-app.
 - `Show Tutorial` to launch an interactive walkthrough of all features.
 
+### Organize Media JSON Rules (Optional)
+
+`Organize Media` now supports an optional JSON rules file so you can clean torrent-style names and control TV episode naming.
+
+- In the GUI, set **Organize Rules JSON (optional)** to your rules file.
+- Leave it blank to use the default built-in behavior.
+- A starter template is included at:
+  - `Python Projects/Subtitle/organize_media_rules.example.json`
+
+Example behavior with rules:
+- `Show.Name.S01E02.1080p.WEBRip.x265-GRP.mkv` → `Show Name - S01E02.mkv`
+- `Movie.Title.2024.1080p.BluRay.x264-YTS.mkv` (folder movie) → `Movie Title 2024.mkv`
+
 **First Run**: The tutorial automatically prompts on first launch to help new users get started.
 
 ## AI Subtitle Generation (Optional)

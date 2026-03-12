@@ -29,7 +29,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Callable, Dict, Iterable, List, Optional
+from typing import Any, Callable, Dict, Iterable, List, Optional
 from xml.etree import ElementTree
 
 try:
@@ -774,6 +774,163 @@ class SubtitleProcessor:
             })
         
         return summary
+
+    def _load_organize_rules(self, config_path: Optional[str]) -> Dict[str, object]:
+        if not config_path:
+            return {}
+
+        path = Path(config_path).expanduser().resolve()
+        if not path.exists() or not path.is_file():
+            self._log(f"Organize config not found: {path}. Using built-in behavior.")
+            return {}
+
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            self._log(f"Failed to load organize config {path}: {exc}. Using built-in behavior.")
+            return {}
+
+        if not isinstance(payload, dict):
+            self._log(f"Organize config must be a JSON object: {path}. Using built-in behavior.")
+            return {}
+
+        self._log(f"Loaded organize config: {path}")
+        return payload
+
+    def _clean_media_name(self, value: str, rules: Dict[str, object]) -> str:
+        cleaned = value
+
+        if bool(rules.get("normalize_separators", False)):
+            cleaned = re.sub(r"[._]+", " ", cleaned)
+
+        if bool(rules.get("strip_bracketed", False)):
+            cleaned = re.sub(r"\[[^\]]*\]", " ", cleaned)
+            cleaned = re.sub(r"\([^\)]*\)", " ", cleaned)
+            cleaned = re.sub(r"\{[^\}]*\}", " ", cleaned)
+
+        cutoff_tokens = rules.get("cutoff_tokens", [])
+        if isinstance(cutoff_tokens, list) and cutoff_tokens:
+            cutoff_index = len(cleaned)
+            for token in cutoff_tokens:
+                if not isinstance(token, str) or not token.strip():
+                    continue
+                token_text = token.strip()
+                try:
+                    match = re.search(token_text, cleaned, re.IGNORECASE)
+                except re.error:
+                    match = re.search(re.escape(token_text), cleaned, re.IGNORECASE)
+                if match and match.start() < cutoff_index:
+                    cutoff_index = match.start()
+            cleaned = cleaned[:cutoff_index]
+
+        cleanup_regex = rules.get("cleanup_regex", [])
+        if isinstance(cleanup_regex, list):
+            for entry in cleanup_regex:
+                if not isinstance(entry, dict):
+                    continue
+                pattern = entry.get("pattern")
+                replace = entry.get("replace", "")
+                if not isinstance(pattern, str) or not pattern:
+                    continue
+                if not isinstance(replace, str):
+                    replace = str(replace)
+                try:
+                    cleaned = re.sub(pattern, replace, cleaned)
+                except re.error:
+                    continue
+
+        cleaned = re.sub(r"\s+", " ", cleaned).strip(" ._-")
+        return cleaned or value.strip()
+
+    def _extract_tv_episode_info(self, file_stem: str, tv_rules: Dict[str, object]) -> Optional[Dict[str, int]]:
+        configured_patterns = tv_rules.get("patterns", [])
+        pattern_entries: List[Dict[str, object]] = []
+
+        if isinstance(configured_patterns, list):
+            for entry in configured_patterns:
+                if isinstance(entry, str):
+                    pattern_entries.append({
+                        "pattern": entry,
+                        "season_group": "season",
+                        "episode_group": "episode",
+                    })
+                elif isinstance(entry, dict):
+                    pattern_entries.append({
+                        "pattern": entry.get("pattern"),
+                        "season_group": entry.get("season_group", "season"),
+                        "episode_group": entry.get("episode_group", "episode"),
+                    })
+
+        if not pattern_entries:
+            pattern_entries = [{"pattern": r"([Ss]\d{2}[Ee]\d{2})", "season_group": None, "episode_group": None}]
+
+        for entry in pattern_entries:
+            pattern = entry.get("pattern")
+            if not isinstance(pattern, str) or not pattern:
+                continue
+
+            try:
+                regex = re.compile(pattern, re.IGNORECASE)
+            except re.error:
+                continue
+
+            match = regex.search(file_stem)
+            if not match:
+                continue
+
+            season_group = entry.get("season_group")
+            episode_group = entry.get("episode_group")
+
+            season: Optional[int] = None
+            episode: Optional[int] = None
+
+            if isinstance(season_group, str) and isinstance(episode_group, str):
+                try:
+                    season = int(match.group(season_group))
+                    episode = int(match.group(episode_group))
+                except (IndexError, KeyError, TypeError, ValueError):
+                    season = None
+                    episode = None
+
+            if season is None or episode is None:
+                full_match = match.group(0)
+                sxe = re.search(r"[Ss](\d{1,2})[Ee](\d{1,3})", full_match)
+                if sxe:
+                    season = int(sxe.group(1))
+                    episode = int(sxe.group(2))
+                elif match.lastindex and match.lastindex >= 2:
+                    try:
+                        season = int(match.group(1))
+                        episode = int(match.group(2))
+                    except (TypeError, ValueError):
+                        season = None
+                        episode = None
+
+            if season is None or episode is None:
+                continue
+
+            return {
+                "season": season,
+                "episode": episode,
+                "match_start": int(match.start()),
+            }
+
+        return None
+
+    def _render_tv_stem(self, template: str, season: int, episode: int, clean_name: str) -> str:
+        season_episode = f"S{season:02d}E{episode:02d}"
+        try:
+            rendered = template.format(
+                season=season,
+                episode=episode,
+                season_episode=season_episode,
+                clean_name=clean_name,
+            )
+        except Exception:
+            rendered = season_episode
+
+        rendered = re.sub(r"\s+", " ", rendered).strip(" ._-")
+        return rendered or season_episode
     
     def organize_media(
         self,
@@ -782,12 +939,15 @@ class SubtitleProcessor:
         target_files: List[str],
         organize_movies: bool = True,
         organize_tv: bool = True,
+        organize_config_path: Optional[str] = None,
     ) -> OperationSummary:
-        """Organize media files - move movies up one level, rename TV shows to S##E## format."""
+        """Organize media files - move movies up one level and normalize TV episode names."""
         summary = OperationSummary(action="organize_media")
-        
-        import re
-        tv_pattern = re.compile(r'([Ss]\d{2}[Ee]\d{2})', re.IGNORECASE)
+
+        rules = self._load_organize_rules(organize_config_path)
+        movie_rules = rules.get("movie_name", {}) if isinstance(rules.get("movie_name"), dict) else {}
+        tv_rules = rules.get("tv_name", {}) if isinstance(rules.get("tv_name"), dict) else {}
+        tv_template = str(tv_rules.get("template", "{season_episode}"))
         
         # Process folders
         for folder_str in folders:
@@ -808,7 +968,10 @@ class SubtitleProcessor:
                         continue
                     
                     # Check if it looks like a TV show
-                    is_tv = any(tv_pattern.search(str(f)) for f in video_files)
+                    is_tv = any(
+                        self._extract_tv_episode_info(f.stem, tv_rules) is not None
+                        for f in video_files
+                    )
                     if is_tv:
                         continue
                     
@@ -816,13 +979,17 @@ class SubtitleProcessor:
                     for video_file in video_files:
                         try:
                             file_ext = video_file.suffix
-                            new_filename = f"{subfolder.name}{file_ext}"
+                            movie_name = subfolder.name
+                            if movie_rules:
+                                movie_name = self._clean_media_name(movie_name, movie_rules)
+
+                            new_filename = f"{movie_name}{file_ext}"
                             new_path = folder / new_filename
                             
                             # Handle conflicts
                             counter = 1
                             while new_path.exists():
-                                new_filename = f"{subfolder.stem}_{counter}{file_ext}"
+                                new_filename = f"{movie_name}_{counter}{file_ext}"
                                 new_path = folder / new_filename
                                 counter += 1
                             
@@ -856,15 +1023,27 @@ class SubtitleProcessor:
                     video_files = [f for f in files if Path(f).suffix.lower() in VIDEO_EXTENSIONS]
                     
                     for video_file in video_files:
-                        match = tv_pattern.search(video_file)
-                        if not match:
+                        stem = Path(video_file).stem
+                        episode_info = self._extract_tv_episode_info(stem, tv_rules)
+                        if not episode_info:
                             continue
                         
                         try:
-                            season_episode = match.group(1).upper()
                             old_path = root_path / video_file
                             file_ext = Path(video_file).suffix
-                            new_filename = f"{season_episode}{file_ext}"
+                            season = int(episode_info["season"])
+                            episode = int(episode_info["episode"])
+                            match_start = int(episode_info["match_start"])
+
+                            if tv_rules:
+                                prefix = stem[:match_start].strip()
+                                clean_source = prefix or root_path.name
+                                clean_name = self._clean_media_name(clean_source, tv_rules)
+                                new_stem = self._render_tv_stem(tv_template, season, episode, clean_name)
+                            else:
+                                new_stem = f"S{season:02d}E{episode:02d}"
+
+                            new_filename = f"{new_stem}{file_ext}"
                             new_path = root_path / new_filename
                             
                             # Skip if already named correctly
@@ -874,7 +1053,7 @@ class SubtitleProcessor:
                             # Handle conflicts
                             counter = 1
                             while new_path.exists():
-                                new_filename = f"{season_episode}_{counter}{file_ext}"
+                                new_filename = f"{new_stem}_{counter}{file_ext}"
                                 new_path = root_path / new_filename
                                 counter += 1
                             
@@ -1948,6 +2127,7 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                         target_files=target_files,
                         organize_movies=bool(self.options.get("organize_movies", True)),
                         organize_tv=bool(self.options.get("organize_tv", True)),
+                        organize_config_path=str(self.options.get("organize_config_path", "")).strip() or None,
                     )
                     payload = summary.to_dict()
                 elif self.action == "repair":
@@ -2363,6 +2543,20 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
             organize_options.addWidget(self.repair_backup_checkbox)
             organize_options.addStretch()
             tools_layout.addLayout(organize_options)
+
+            organize_config_row = QHBoxLayout()
+            organize_config_row.addWidget(QLabel("Organize Rules JSON (optional):"))
+            self.organize_rules_input = QLineEdit()
+            self.organize_rules_input.setPlaceholderText("e.g. organize_media_rules.example.json")
+            self.organize_rules_input.setToolTip(
+                "Optional JSON rules for torrent-style cleanup and episode naming. "
+                "Leave blank to use built-in behavior."
+            )
+            self.organize_rules_browse_button = QPushButton("Browse...")
+            self.organize_rules_browse_button.clicked.connect(self._choose_organize_rules_file)
+            organize_config_row.addWidget(self.organize_rules_input)
+            organize_config_row.addWidget(self.organize_rules_browse_button)
+            tools_layout.addLayout(organize_config_row)
             
             # Tool buttons
             tools_button_row1 = QHBoxLayout()
@@ -2648,6 +2842,15 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 options = self._collect_common_options()
                 options["organize_movies"] = self.organize_movies_checkbox.isChecked()
                 options["organize_tv"] = self.organize_tv_checkbox.isChecked()
+                rules_path = self.organize_rules_input.text().strip()
+                if rules_path:
+                    path = Path(rules_path).expanduser().resolve()
+                    if not path.exists() or not path.is_file():
+                        QMessageBox.warning(self, "Validation", f"Organize rules JSON not found:\n{path}")
+                        return
+                    options["organize_config_path"] = str(path)
+                else:
+                    options["organize_config_path"] = ""
                  
                 if not options["organize_movies"] and not options["organize_tv"]:
                     QMessageBox.warning(self, "Validation", "Please select at least one organization option (Movies or TV Shows)")
@@ -2670,6 +2873,16 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                     str(exc)
                 )
                 QMessageBox.warning(self, "Validation", str(exc))
+
+        def _choose_organize_rules_file(self) -> None:
+            file_path, _ = QFileDialog.getOpenFileName(
+                self,
+                "Select Organize Rules JSON",
+                str(Path(__file__).resolve().parent),
+                "JSON Files (*.json)",
+            )
+            if file_path:
+                self.organize_rules_input.setText(file_path)
         
         def _start_repair(self) -> None:
             try:
@@ -3206,6 +3419,7 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 "convert_suffix": self.convert_suffix_input.text(),
                 "organize_movies": self.organize_movies_checkbox.isChecked(),
                 "organize_tv": self.organize_tv_checkbox.isChecked(),
+                "organize_rules_path": self.organize_rules_input.text(),
                 "repair_backup": self.repair_backup_checkbox.isChecked(),
                 "whisper_model": self.whisper_model_combo.currentText() if self.whisper_model_combo else "base",
                 "whisper_language": self.whisper_language_input.text() if self.whisper_language_input else "",
@@ -3266,6 +3480,7 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
             # Restore Swiss Army Knife tool options
             self.organize_movies_checkbox.setChecked(ui_state.get("organize_movies", True))
             self.organize_tv_checkbox.setChecked(ui_state.get("organize_tv", True))
+            self.organize_rules_input.setText(ui_state.get("organize_rules_path", ""))
             self.repair_backup_checkbox.setChecked(ui_state.get("repair_backup", True))
             
             # Restore Whisper AI settings (only if AI is enabled)
