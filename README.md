@@ -20,7 +20,74 @@ This tool scans video folders, removes embedded subtitle streams, and can add su
 - Python 3.10+
 - `ffmpeg` and `ffprobe` on your `PATH`
 
-Install Python dependencies:
+## Windows Install (Recommended)
+
+Run one of these from the repository root.
+
+Option 1: Full installer via PowerShell (recommended)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "Python Projects/Subtitle/install_all_windows.ps1"
+```
+
+Option 2: Full installer via BAT launcher (same functionality, easier double-click)
+
+```bat
+"Python Projects\Subtitle\install_all_windows.bat"
+```
+
+The full installer will:
+- Detect/install a supported Python version (3.10-3.12, prefers 3.11)
+- Create or repair the local virtual environment
+- Install core dependencies from `requirements.txt`
+- Optionally install AI dependencies from `requirements_ai.txt`
+- Install/verify `ffmpeg` and `ffprobe`
+- Verify key packages and launch the GUI
+
+Useful installer options (PowerShell form):
+
+```powershell
+# Force Python install method: auto | winget | choco | scoop
+powershell -ExecutionPolicy Bypass -File "Python Projects/Subtitle/install_all_windows.ps1" -PythonInstallMethod winget
+
+# Force ffmpeg install method: auto | winget | choco | scoop
+powershell -ExecutionPolicy Bypass -File "Python Projects/Subtitle/install_all_windows.ps1" -FfmpegInstallMethod winget
+
+# Do not pause at end
+powershell -ExecutionPolicy Bypass -File "Python Projects/Subtitle/install_all_windows.ps1" -NoPause
+
+# Keep temporary installer artifacts/cache folders
+powershell -ExecutionPolicy Bypass -File "Python Projects/Subtitle/install_all_windows.ps1" -KeepInstallArtifacts
+```
+
+The BAT launcher passes arguments through, so these also work:
+
+```bat
+"Python Projects\Subtitle\install_all_windows.bat" -NoPause
+"Python Projects\Subtitle\install_all_windows.bat" -PythonInstallMethod winget -FfmpegInstallMethod winget
+```
+
+### ffmpeg-Only Install (Optional)
+
+Use this only if you already have Python and dependencies installed and just need ffmpeg/ffprobe.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "Python Projects/Subtitle/install_ffmpeg_windows.ps1"
+```
+
+```bat
+"Python Projects\Subtitle\install_ffmpeg_windows.bat"
+```
+
+You can force method selection here as well:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "Python Projects/Subtitle/install_ffmpeg_windows.ps1" -Method winget
+```
+
+## Manual Install
+
+If you prefer manual setup, install Python dependencies with:
 
 ```bash
 pip install -r "Python Projects/Subtitle/requirements.txt"
@@ -29,7 +96,7 @@ pip install -r "Python Projects/Subtitle/requirements.txt"
 pip install -r "Python Projects/Subtitle/requirements_ai.txt"
 ```
 
-Install ffmpeg on Windows:
+Install ffmpeg on Windows manually via installer script:
 
 ```powershell
 # Auto-detect winget/choco/scoop

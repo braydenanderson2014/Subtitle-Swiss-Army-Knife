@@ -4,6 +4,11 @@ setlocal
 set SCRIPT_DIR=%~dp0
 cd /d "%SCRIPT_DIR%"
 set LOG_FILE=%SCRIPT_DIR%install_all_windows_launcher.log
+set SHOULD_PAUSE=1
+
+for %%A in (%*) do (
+  if /I "%%~A"=="-NoPause" set SHOULD_PAUSE=0
+)
 
 echo === Subtitle Tool Installer Launcher ===
 echo Script directory: %SCRIPT_DIR%
@@ -27,10 +32,10 @@ if %EXITCODE% neq 0 (
   echo.
   echo Full install automation failed. Check the error messages above.
   echo See launcher log: %LOG_FILE%
-  pause
+  if %SHOULD_PAUSE% neq 0 pause
   exit /b %EXITCODE%
 )
 
 echo Full install automation succeeded.
-pause
+if %SHOULD_PAUSE% neq 0 pause
 exit /b 0
