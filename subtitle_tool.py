@@ -101,6 +101,13 @@ try:
 except ImportError:
     pysubs2 = None  # type: ignore[assignment]
 
+try:
+    from imdb import Cinemagoer as _Cinemagoer
+    _CINEMAGOER_AVAILABLE = True
+except ImportError:
+    _Cinemagoer = None  # type: ignore[assignment]
+    _CINEMAGOER_AVAILABLE = False
+
 
 def probe_ai_runtime() -> Tuple[bool, List[str], Dict[str, str]]:
     """Probe AI dependencies in the *current* interpreter at runtime."""
@@ -214,6 +221,9 @@ class SubtitleProcessor:
         self.ffmpeg_bin = ffmpeg_bin or "ffmpeg"
         self.ffprobe_bin = ffprobe_bin or "ffprobe"
         self.log_callback = log_callback
+        # Cache for IMDB episode name lookups - avoids repeated network requests
+        # Key: "show_name_lower|season|episode", Value: episode title or None
+        self._episode_name_cache: Dict[str, Optional[str]] = {}
 
     def _log(self, message: str) -> None:
         if self.log_callback:
@@ -952,21 +962,90 @@ class SubtitleProcessor:
 
         return None
 
-    def _render_tv_stem(self, template: str, season: int, episode: int, clean_name: str) -> str:
+    def _render_tv_stem(self, template: str, season: int, episode: int, clean_name: str, episode_name: Optional[str] = None) -> str:
         season_episode = f"S{season:02d}E{episode:02d}"
+        ep_name_val = episode_name or ""
         try:
             rendered = template.format(
                 season=season,
                 episode=episode,
                 season_episode=season_episode,
                 clean_name=clean_name,
+                episode_name=ep_name_val,
             )
         except Exception:
             rendered = season_episode
 
+        # If episode_name was empty, clean up orphaned trailing separators like " - "
+        if not ep_name_val:
+            rendered = re.sub(r"(\s*-\s*){2,}", " - ", rendered)  # collapse double-dash
+            rendered = re.sub(r"[\s\-_]+$", "", rendered)          # trim trailing separators
+
         rendered = re.sub(r"\s+", " ", rendered).strip(" ._-")
         return rendered or season_episode
-    
+
+    def _lookup_episode_name(self, show_name: str, season: int, episode: int) -> Optional[str]:
+        """Look up an episode's title from IMDB using cinemagoer.
+
+        Requires ``pip install cinemagoer``.  Results are cached in
+        ``self._episode_name_cache`` for the lifetime of this processor
+        instance so that multiple files from the same series only hit the
+        network once per series (the episode list is fetched in bulk).
+        """
+        if not _CINEMAGOER_AVAILABLE:
+            self._log(
+                "cinemagoer is not installed; IMDB lookup skipped. "
+                "Install it with:  pip install cinemagoer"
+            )
+            return None
+
+        cache_key = f"{show_name.lower()}|{season}|{episode}"
+        if cache_key in self._episode_name_cache:
+            return self._episode_name_cache[cache_key]
+
+        result: Optional[str] = None
+        try:
+            ia = _Cinemagoer()
+            search_results = ia.search_movie(show_name)
+
+            # Prefer an explicit TV series match in the first few results
+            series = None
+            for r in search_results[:5]:
+                if r.get("kind") in ("tv series", "tv mini series"):
+                    series = r
+                    break
+            if series is None and search_results:
+                series = search_results[0]
+
+            if series is None:
+                self._log(f"IMDB: No results for '{show_name}'")
+                self._episode_name_cache[cache_key] = None
+                return None
+
+            self._log(f"IMDB: Fetching episodes for '{series.get('title', show_name)}' …")
+            ia.update(series, "episodes")
+            episodes_by_season = series.get("episodes", {})
+
+            if season in episodes_by_season and episode in episodes_by_season[season]:
+                ep = episodes_by_season[season][episode]
+                result = ep.get("title") or None
+                if result:
+                    self._log(
+                        f"IMDB: S{season:02d}E{episode:02d} of '{show_name}' → '{result}'"
+                    )
+            else:
+                self._log(
+                    f"IMDB: S{season:02d}E{episode:02d} not found for '{show_name}'"
+                )
+
+        except Exception as exc:
+            self._log(
+                f"IMDB lookup error for '{show_name}' S{season:02d}E{episode:02d}: {exc}"
+            )
+
+        self._episode_name_cache[cache_key] = result
+        return result
+
     def organize_media(
         self,
         folders: List[str],
@@ -983,6 +1062,10 @@ class SubtitleProcessor:
         movie_rules = rules.get("movie_name", {}) if isinstance(rules.get("movie_name"), dict) else {}
         tv_rules = rules.get("tv_name", {}) if isinstance(rules.get("tv_name"), dict) else {}
         tv_template = str(tv_rules.get("template", "{season_episode}"))
+
+        # IMDB lookup config (optional) - requires: pip install cinemagoer
+        _imdb_cfg = tv_rules.get("imdb_lookup", {})
+        _imdb_enabled = isinstance(_imdb_cfg, dict) and bool(_imdb_cfg.get("enabled", False))
         
         # Process folders
         for folder_str in folders:
@@ -1074,7 +1157,13 @@ class SubtitleProcessor:
                                 prefix = stem[:match_start].strip()
                                 clean_source = prefix or root_path.name
                                 clean_name = self._clean_media_name(clean_source, tv_rules)
-                                new_stem = self._render_tv_stem(tv_template, season, episode, clean_name)
+
+                                # Optional IMDB lookup for real episode title
+                                episode_name: Optional[str] = None
+                                if _imdb_enabled:
+                                    episode_name = self._lookup_episode_name(clean_name, season, episode)
+
+                                new_stem = self._render_tv_stem(tv_template, season, episode, clean_name, episode_name)
                             else:
                                 new_stem = f"S{season:02d}E{episode:02d}"
 

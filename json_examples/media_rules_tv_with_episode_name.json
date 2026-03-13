@@ -1,0 +1,131 @@
+{
+  "_description": "TV preset that looks up the real episode title from IMDB and includes it in the filename.",
+  "_example_before": "Show.Name.S03E07.1080p.WEBRip.x265-GRP.mkv",
+  "_example_after":  "Show Name - S03E07 - The Real Episode Title.mkv",
+  "_requirement": "Requires: pip install cinemagoer  (free, no API key needed)",
+  "_fallback": "If cinemagoer is not installed or IMDB lookup fails, {episode_name} is silently dropped and the template output is trimmed automatically.",
+
+  "movie_name": {
+    "_comment": "Standard movie cleanup - strips quality tags, normalizes separators",
+    "normalize_separators": true,
+    "strip_bracketed": true,
+    "cutoff_tokens": [
+      "\\b2160p\\b",
+      "\\b1080p\\b",
+      "\\b720p\\b",
+      "\\b480p\\b",
+      "\\bBlu[-_. ]?Ray\\b",
+      "\\bBDRip\\b",
+      "\\bBRRip\\b",
+      "\\bHDRip\\b",
+      "\\bWEB[-_. ]?DL\\b",
+      "\\bWEB[-_. ]?Rip\\b",
+      "\\bWEBRip\\b",
+      "\\bx264\\b",
+      "\\bx265\\b",
+      "\\bH\\.?264\\b",
+      "\\bH\\.?265\\b",
+      "\\bHEVC\\b",
+      "\\bAVC\\b",
+      "\\bAAC\\b",
+      "\\bAC3\\b",
+      "\\bDTS\\b",
+      "\\bDDP?5\\.1\\b",
+      "\\bYTS\\b",
+      "\\bRARBG\\b"
+    ],
+    "cleanup_regex": [
+      {
+        "pattern": "[-_]+",
+        "replace": " ",
+        "_comment": "Replace remaining hyphens/underscores with space"
+      },
+      {
+        "pattern": "\\s{2,}",
+        "replace": " ",
+        "_comment": "Collapse multiple spaces"
+      }
+    ]
+  },
+
+  "tv_name": {
+    "_comment": "TV preset with IMDB lookup. Template produces: Show Name - S##E## - Episode Title",
+    "template": "{clean_name} - {season_episode} - {episode_name}",
+    "_template_comment": "Available variables: {clean_name}, {season}, {episode}, {season_episode} (S##E##), {episode_name} (from IMDB). If {episode_name} is empty the trailing ' - ' is trimmed automatically.",
+
+    "normalize_separators": true,
+    "_normalize_separators_comment": "Convert dots/underscores to spaces before quality-tag stripping",
+
+    "strip_bracketed": true,
+    "_strip_bracketed_comment": "Remove [Group], (REPACK) etc.",
+
+    "imdb_lookup": {
+      "_comment": "IMDB episode title lookup via cinemagoer. Install with: pip install cinemagoer",
+      "enabled": true,
+      "_enabled_comment": "Set to false to disable lookup and fall back to pure filename cleaning"
+    },
+
+    "patterns": [
+      {
+        "pattern": "(?i)S(?P<season>\\d{1,2})E(?P<episode>\\d{1,3})",
+        "_comment": "Standard: S01E02, s01e02"
+      },
+      {
+        "pattern": "(?i)(?P<season>\\d{1,2})x(?P<episode>\\d{1,3})",
+        "_comment": "Alternate: 1x02"
+      },
+      {
+        "pattern": "(?i)Season[ ._-]?(?P<season>\\d{1,2})[ ._-]*Episode[ ._-]?(?P<episode>\\d{1,3})",
+        "_comment": "Long form: Season 1 Episode 2 / Season.1.Episode.2"
+      },
+      {
+        "pattern": "(?i)(?P<season>\\d{1,2})[ ._-]*Ep(?:isode)?[ ._-]?(?P<episode>\\d{1,3})",
+        "_comment": "Short long form: 1.Ep02 / 1 Episode 2"
+      }
+    ],
+    "_patterns_comment": "Ordered list of episode-detection regex patterns. First match wins. Named groups 'season' and 'episode' must be present.",
+
+    "cutoff_tokens": [
+      "\\b2160p\\b",
+      "\\b1080p\\b",
+      "\\b720p\\b",
+      "\\b480p\\b",
+      "\\bBlu[-_. ]?Ray\\b",
+      "\\bBDRip\\b",
+      "\\bBRRip\\b",
+      "\\bHDRip\\b",
+      "\\bWEB[-_. ]?DL\\b",
+      "\\bWEB[-_. ]?Rip\\b",
+      "\\bWEBRip\\b",
+      "\\bx264\\b",
+      "\\bx265\\b",
+      "\\bH\\.?264\\b",
+      "\\bH\\.?265\\b",
+      "\\bHEVC\\b",
+      "\\bAVC\\b",
+      "\\bAAC\\b",
+      "\\bAC3\\b",
+      "\\bDTS\\b",
+      "\\bDDP?5\\.1\\b",
+      "\\bYTS\\b",
+      "\\bRARBG\\b",
+      "\\bPROPER\\b",
+      "\\bREPACK\\b",
+      "\\bREMUX\\b"
+    ],
+    "_cutoff_tokens_comment": "Everything from the first matching token onward is removed from the show name. The episode S##E## is extracted separately, so stripping quality tags here only affects the show-name portion.",
+
+    "cleanup_regex": [
+      {
+        "pattern": "[-_]+",
+        "replace": " ",
+        "_comment": "Replace remaining hyphens/underscores with space"
+      },
+      {
+        "pattern": "\\s{2,}",
+        "replace": " ",
+        "_comment": "Collapse multiple spaces"
+      }
+    ]
+  }
+}

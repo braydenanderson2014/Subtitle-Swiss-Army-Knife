@@ -1,0 +1,48 @@
+{
+  "_description": "Minimal cleanup. Keeps most source tags and only normalizes separators plus obvious release clutter.",
+  "_example_movie": "Movie.Title.2024.BluRay.x265-GROUP -> Movie Title 2024",
+  "_example_tv": "Show.Name.S01E02.WEBRip.x264-GROUP -> Show Name - S01E02",
+  "movie_name": {
+    "normalize_separators": true,
+    "strip_bracketed": false,
+    "cutoff_tokens": [
+      "\\bx264\\b",
+      "\\bx265\\b",
+      "\\bHEVC\\b",
+      "\\bYTS\\b",
+      "\\bRARBG\\b"
+    ],
+    "cleanup_regex": [
+      {
+        "pattern": "[-_]+",
+        "replace": " "
+      }
+    ]
+  },
+  "tv_name": {
+    "template": "{clean_name} - {season_episode}",
+    "normalize_separators": true,
+    "strip_bracketed": false,
+    "patterns": [
+      {
+        "pattern": "(?i)S(?P<season>\\d{1,2})E(?P<episode>\\d{1,3})"
+      },
+      {
+        "pattern": "(?i)(?P<season>\\d{1,2})x(?P<episode>\\d{1,3})"
+      }
+    ],
+    "cutoff_tokens": [
+      "\\bx264\\b",
+      "\\bx265\\b",
+      "\\bHEVC\\b",
+      "\\bYTS\\b",
+      "\\bRARBG\\b"
+    ],
+    "cleanup_regex": [
+      {
+        "pattern": "[-_]+",
+        "replace": " "
+      }
+    ]
+  }
+}

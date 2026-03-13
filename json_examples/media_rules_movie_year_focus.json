@@ -1,0 +1,79 @@
+{
+  "_description": "Movie-focused preset to preserve title + year while stripping media source details like BluRay, WEB-DL, codecs, and audio tags.",
+  "_example_movie": "The.Movie.Title.2019.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.5.1-GRP -> The Movie Title 2019",
+  "_example_tv": "Series.S03E04.1080p.WEB-DL.x264-GRP -> Series - S03E04",
+  "movie_name": {
+    "normalize_separators": true,
+    "strip_bracketed": true,
+    "cutoff_tokens": [
+      "\\bUHD\\b",
+      "\\b2160p\\b",
+      "\\b1080p\\b",
+      "\\b720p\\b",
+      "\\bBlu[-_. ]?Ray\\b",
+      "\\bWEB[-_. ]?DL\\b",
+      "\\bWEB[-_. ]?Rip\\b",
+      "\\bREMUX\\b",
+      "\\bHDR10(?:\\+)?\\b",
+      "\\bDolby[-_. ]?Vision\\b",
+      "\\bx264\\b",
+      "\\bx265\\b",
+      "\\bHEVC\\b",
+      "\\bAV1\\b",
+      "\\bAAC\\b",
+      "\\bAC3\\b",
+      "\\bEAC3\\b",
+      "\\bDDP?5\\.1\\b",
+      "\\bDTS[-_. ]?HD\\b",
+      "\\bTrueHD\\b",
+      "\\bMA\\b",
+      "\\bYTS\\b",
+      "\\bRARBG\\b"
+    ],
+    "cleanup_regex": [
+      {
+        "pattern": "[-_]+",
+        "replace": " "
+      },
+      {
+        "pattern": "\\s{2,}",
+        "replace": " "
+      }
+    ]
+  },
+  "tv_name": {
+    "template": "{clean_name} - {season_episode}",
+    "normalize_separators": true,
+    "strip_bracketed": true,
+    "patterns": [
+      {
+        "pattern": "(?i)S(?P<season>\\d{1,2})E(?P<episode>\\d{1,3})"
+      },
+      {
+        "pattern": "(?i)(?P<season>\\d{1,2})x(?P<episode>\\d{1,3})"
+      }
+    ],
+    "cutoff_tokens": [
+      "\\b2160p\\b",
+      "\\b1080p\\b",
+      "\\b720p\\b",
+      "\\bBlu[-_. ]?Ray\\b",
+      "\\bWEB[-_. ]?DL\\b",
+      "\\bWEB[-_. ]?Rip\\b",
+      "\\bREMUX\\b",
+      "\\bx264\\b",
+      "\\bx265\\b",
+      "\\bHEVC\\b",
+      "\\bAAC\\b",
+      "\\bDDP?5\\.1\\b",
+      "\\bYTS\\b",
+      "\\bRARBG\\b"
+    ],
+    "cleanup_regex": [
+      {
+        "pattern": "[-_]+",
+        "replace": " "
+      }
+    ]
+  }
+}

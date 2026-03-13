@@ -7,7 +7,15 @@ param(
 
     [switch]$NoPause,
 
-    [switch]$KeepInstallArtifacts
+    [switch]$KeepInstallArtifacts,
+
+    # Uninstall ALL dependencies: deletes venv, pip cache dirs, and reports what
+    # was removed. Does NOT uninstall system-wide Python, ffmpeg, or VC++.
+    [switch]$Uninstall,
+
+    # Uninstall only the AI/IMDB extras: torch, openai-whisper, pysubs2,
+    # cinemagoer, plus the downloaded Whisper model cache on disk.
+    [switch]$UninstallAI
 )
 
 $ErrorActionPreference = "Stop"
@@ -28,6 +36,53 @@ function Cleanup-InstallerArtifacts {
             # Best-effort cleanup only.
         }
     }
+}
+
+function Remove-PathRobust {
+    param([string]$Path)
+
+    if (-not $Path -or -not (Test-Path -LiteralPath $Path)) {
+        return $true
+    }
+
+    # First pass: clear common attributes and try PowerShell deletion a few times.
+    try {
+        attrib -r -s -h "$Path" /s /d 2>$null | Out-Null
+    } catch {
+        # Best effort only.
+    }
+
+    for ($attempt = 1; $attempt -le 3; $attempt++) {
+        try {
+            Remove-Item -LiteralPath $Path -Recurse -Force -ErrorAction SilentlyContinue
+        } catch {
+            # Keep trying with fallback paths below.
+        }
+
+        if (-not (Test-Path -LiteralPath $Path)) {
+            return $true
+        }
+
+        Start-Sleep -Milliseconds 250
+    }
+
+    # Fallback: use cmd rmdir/del with long-path prefix support.
+    try {
+        if (Test-Path -LiteralPath $Path) {
+            $fullPath = [System.IO.Path]::GetFullPath($Path)
+            $longPath = if ($fullPath.StartsWith("\\?\")) { $fullPath } else { "\\?\$fullPath" }
+            $isDir = (Get-Item -LiteralPath $Path -ErrorAction SilentlyContinue).PSIsContainer
+            if ($isDir) {
+                cmd /c "rmdir /s /q \"$longPath\"" 2>$null | Out-Null
+            } else {
+                cmd /c "del /f /q \"$longPath\"" 2>$null | Out-Null
+            }
+        }
+    } catch {
+        # Best effort only.
+    }
+
+    return (-not (Test-Path -LiteralPath $Path))
 }
 
 # Catch any terminating error, show it, and pause so the window stays open
@@ -611,8 +666,402 @@ $requirementsAIPath = Join-Path $scriptDir "requirements_ai.txt"
 $ffmpegInstallerPath = Join-Path $scriptDir "install_ffmpeg_windows.ps1"
 $subtitleToolPath = Join-Path $scriptDir "subtitle_tool.py"
 $venvPath = Join-Path $scriptDir "venv"
+$manifestPath = Join-Path $scriptDir ".install_manifest.json"
 
 Set-Location $scriptDir
+
+# ---------------------------------------------------------------------------
+# Manifest helpers - track what THIS script installed vs. what pre-existed.
+# The manifest is written at the end of a successful install and read during
+# uninstall so that we only remove components that we actually put there.
+# ---------------------------------------------------------------------------
+function Read-InstallManifest {
+    if (-not (Test-Path $manifestPath)) { return @{} }
+    try {
+        $raw = Get-Content $manifestPath -Raw -Encoding UTF8
+        $obj = $raw | ConvertFrom-Json
+        # Convert PSCustomObject to hashtable so callers can use .ContainsKey etc.
+        $ht = @{}
+        $obj.PSObject.Properties | ForEach-Object { $ht[$_.Name] = $_.Value }
+        return $ht
+    } catch {
+        return @{}
+    }
+}
+
+function Save-InstallManifest {
+    param([hashtable]$Manifest)
+    try {
+        $Manifest | ConvertTo-Json -Depth 5 | Set-Content $manifestPath -Encoding UTF8
+    } catch {
+        Write-Host "Warning: could not save install manifest: $($_.Exception.Message)" -ForegroundColor DarkYellow
+    }
+}
+
+# ===========================================================================
+# UNINSTALL AI  (-UninstallAI)
+# Removes AI / IMDB-lookup packages from the venv and deletes Whisper models.
+# Leaves the core venv (PyQt6, fastapi, etc.) intact.
+# ===========================================================================
+if ($UninstallAI) {
+    Write-Host ""
+    Write-Host "=== Uninstall AI Libraries ===" -ForegroundColor Cyan
+    Write-Host ""
+
+    $venvPy = Join-Path $venvPath "Scripts\python.exe"
+
+    if (-not (Test-Path $venvPy)) {
+        Write-Host "No virtual environment found at $venvPath. Nothing to uninstall." -ForegroundColor Yellow
+    } else {
+        $aiPackages = @("torch", "torchvision", "torchaudio", "openai-whisper", "whisper", "pysubs2", "cinemagoer", "imdbpy")
+
+        Write-Host "Uninstalling AI packages from venv..." -ForegroundColor White
+        foreach ($pkg in $aiPackages) {
+            Write-Host "  Removing $pkg..." -NoNewline -ForegroundColor Gray
+            $result = & $venvPy -m pip uninstall -y $pkg 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host " done" -ForegroundColor Green
+            } else {
+                # pip exits non-zero when the package isn't installed - that's fine.
+                Write-Host " (not installed, skipping)" -ForegroundColor DarkGray
+            }
+        }
+
+        # Also remove stale torch-related packages that may linger after uninstall
+        Write-Host "  Cleaning up torch dependencies..." -NoNewline -ForegroundColor Gray
+        & $venvPy -m pip uninstall -y filelock sympy networkx jinja2-markupsafe 2>&1 | Out-Null
+        Write-Host " done" -ForegroundColor Green
+
+        Write-StatusOK "AI packages removed from venv"
+    }
+
+    # Delete downloaded Whisper model cache
+    # Whisper stores models in %USERPROFILE%\.cache\whisper on Windows
+    $whisperModelDirs = @(
+        (Join-Path $env:USERPROFILE ".cache\whisper"),
+        (Join-Path $env:LOCALAPPDATA "whisper"),
+        (Join-Path $env:APPDATA "whisper")
+    )
+    Write-Host ""
+    Write-Host "Searching for Whisper model cache..." -ForegroundColor White
+    $foundAny = $false
+    foreach ($dir in $whisperModelDirs) {
+        if (Test-Path $dir) {
+            $foundAny = $true
+            $size = (Get-ChildItem $dir -Recurse -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum).Sum
+            $sizeMB = [math]::Round($size / 1MB, 1)
+            Write-Host "  Found: $dir  ($($sizeMB)MB)" -ForegroundColor Yellow
+            Write-Host "  Deleting..." -NoNewline -ForegroundColor Gray
+            Remove-Item -Path $dir -Recurse -Force -ErrorAction SilentlyContinue
+            if (-not (Test-Path $dir)) {
+                Write-Host " deleted" -ForegroundColor Green
+            } else {
+                Write-Host " some files could not be deleted (may be in use)" -ForegroundColor Yellow
+            }
+        }
+    }
+    if (-not $foundAny) {
+        Write-Host "  No Whisper model cache found." -ForegroundColor Gray
+    }
+
+    # Offer to remove VC++ if the manifest shows this script installed it for AI
+    $mAI = Read-InstallManifest
+    if ($mAI.Count -gt 0) {
+        $mVC = $mAI["vcredist"]
+        if ($null -ne $mVC) {
+            $vcWasOurs = -not [bool]($mVC.PSObject.Properties["pre_existed"] | Select-Object -ExpandProperty Value)
+            $vcMeth    = [string]($mVC.PSObject.Properties["install_method"] | Select-Object -ExpandProperty Value)
+            if ($vcWasOurs -and $vcMeth) {
+                Write-Host ""
+                Write-Host "The install manifest shows that Visual C++ Redistributable was installed" -ForegroundColor Yellow
+                Write-Host "by this script (required for PyTorch). Since you are removing AI features," -ForegroundColor Yellow
+                Write-Host "you may want to remove it too (install method: $vcMeth)." -ForegroundColor Yellow
+                if (-not $NoPause) {
+                    $vcAnswer = Read-Host "Remove Visual C++ Redistributable as well? [Y/N]"
+                } else {
+                    $vcAnswer = "N"
+                }
+                if ($vcAnswer -match "^[Yy]") {
+                    Write-Host "Uninstalling Visual C++ Redistributable via $vcMeth..." -ForegroundColor White
+                    switch ($vcMeth) {
+                        "winget" {
+                            winget uninstall --id Microsoft.VCRedist.2015+.x64 --silent 2>&1 | Out-Null
+                            Write-Host "  VC++ Redistributable uninstalled." -ForegroundColor Green
+                        }
+                        "choco" {
+                            choco uninstall vcredist-all -y 2>&1 | Out-Null
+                            Write-Host "  VC++ Redistributable uninstalled via Chocolatey." -ForegroundColor Green
+                        }
+                        default {
+                            Write-Host "  Please remove VC++ manually via Apps & Features." -ForegroundColor Yellow
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Write-Host ""
+    Write-Host "=== AI Uninstall Complete ===" -ForegroundColor Green
+    Write-Host ""
+    Write-Host "The core venv (PyQt6, fastapi, etc.) remains intact." -ForegroundColor White
+    Write-Host "Re-run the installer and choose 'Y' at the AI prompt to reinstall AI features." -ForegroundColor White
+    Write-Host ""
+    if (-not $NoPause) { Read-Host "Press Enter to close" }
+    exit 0
+}
+
+# ===========================================================================
+# FULL UNINSTALL  (-Uninstall)
+# Reads .install_manifest.json to know which system components were installed
+# by this script, then removes only those along with the venv and caches.
+# ===========================================================================
+if ($Uninstall) {
+    Write-Host ""
+    Write-Host "=== Full Uninstall ===" -ForegroundColor Cyan
+    Write-Host ""
+
+    # Read manifest - tells us what this script originally installed
+    $m = Read-InstallManifest
+    $hasMfst = $m.Count -gt 0
+
+    # Helper: safely read nested PSCustomObject or hashtable property
+    function Get-MfstProp {
+        param($obj, [string]$key, $default = $null)
+        if ($null -eq $obj) { return $default }
+        if ($obj -is [hashtable]) {
+            if ($obj.ContainsKey($key)) { return $obj[$key] }
+            return $default
+        }
+        $v = $obj.PSObject.Properties[$key]
+        if ($null -eq $v) { return $default }
+        return $v.Value
+    }
+
+    $mPython   = if ($hasMfst) { Get-MfstProp $m "python"   } else { $null }
+    $mVCRedist = if ($hasMfst) { Get-MfstProp $m "vcredist" } else { $null }
+    $mFfmpeg   = if ($hasMfst) { Get-MfstProp $m "ffmpeg"   } else { $null }
+
+    $pyPreExisted  = if ($mPython)   { [bool](Get-MfstProp $mPython   "pre_existed" $true) } else { $true }
+    $pyMethod      = if ($mPython)   { [string](Get-MfstProp $mPython   "install_method" "") } else { "" }
+    $vcPreExisted  = if ($mVCRedist) { [bool](Get-MfstProp $mVCRedist "pre_existed" $true) } else { $true }
+    $vcMethod      = if ($mVCRedist) { [string](Get-MfstProp $mVCRedist "install_method" "") } else { "" }
+    $ffPreExisted  = if ($mFfmpeg)   { [bool](Get-MfstProp $mFfmpeg   "pre_existed" $true) } else { $true }
+    $ffMethod      = if ($mFfmpeg)   { [string](Get-MfstProp $mFfmpeg   "install_method" "") } else { "" }
+
+    # Show summary of what will happen
+    Write-Host "The following will always be removed:" -ForegroundColor White
+    Write-Host "  - Virtual environment:  $venvPath" -ForegroundColor White
+    Write-Host "  - pip cache dirs (.pip-cache, .pip-tmp)" -ForegroundColor White
+    Write-Host "  - __pycache__ folders in the script directory" -ForegroundColor White
+    Write-Host "  - Downloaded Whisper AI model cache" -ForegroundColor White
+        Write-Host "  - Application settings (.subtitle_tool_settings.json)" -ForegroundColor White
+    Write-Host ""
+
+    if (-not $hasMfst) {
+        Write-Host "No install manifest found (.install_manifest.json)." -ForegroundColor Yellow
+        Write-Host "System packages (Python, ffmpeg, VC++) will NOT be touched." -ForegroundColor Yellow
+        Write-Host "If you want to remove them, delete them manually via Apps & Features." -ForegroundColor Yellow
+    } else {
+        Write-Host "System packages (based on install manifest):" -ForegroundColor White
+        if (-not $pyPreExisted -and $pyMethod) {
+            Write-Host "  - Python 3.11    will be uninstalled via $pyMethod" -ForegroundColor Cyan
+        } else {
+            Write-Host "  - Python         was already installed before this script - will NOT be touched" -ForegroundColor Gray
+        }
+        if (-not $ffPreExisted -and $ffMethod) {
+            Write-Host "  - ffmpeg         will be uninstalled via $ffMethod" -ForegroundColor Cyan
+        } else {
+            Write-Host "  - ffmpeg         was already installed before this script - will NOT be touched" -ForegroundColor Gray
+        }
+        if (-not $vcPreExisted -and $vcMethod) {
+            Write-Host "  - VC++ Redist    will be uninstalled via $vcMethod" -ForegroundColor Cyan
+        } else {
+            Write-Host "  - VC++ Redist    was already installed before this script - will NOT be touched" -ForegroundColor Gray
+        }
+    }
+
+    Write-Host ""
+    if (-not $NoPause) {
+        $confirm = Read-Host "Continue with uninstall? [Y/N]"
+        if ($confirm -notmatch "^[Yy]") {
+            Write-Host "Uninstall cancelled." -ForegroundColor Yellow
+            exit 0
+        }
+    }
+
+    Write-Host ""
+
+    # 1. Delete venv
+    if (Test-Path $venvPath) {
+        Write-Host "Deleting virtual environment..." -NoNewline -ForegroundColor White
+        $venvRemoved = Remove-PathRobust -Path $venvPath
+        if ($venvRemoved) {
+            Write-Host " [ " -NoNewline -ForegroundColor White
+            Write-Host "OK" -NoNewline -ForegroundColor Green
+            Write-Host " ]" -ForegroundColor White
+        } else {
+            Write-Host " [ some files in use, partial delete ]" -ForegroundColor Yellow
+        }
+    } else {
+        Write-Host "Virtual environment not found - skipping." -ForegroundColor Gray
+    }
+
+    # 2. Delete installer-created cache dirs
+    foreach ($dir in @((Join-Path $scriptDir ".pip-cache"), (Join-Path $scriptDir ".pip-tmp"))) {
+        if (Test-Path $dir) {
+            Write-Host "Deleting $dir..." -NoNewline -ForegroundColor White
+            if (Remove-PathRobust -Path $dir) {
+                Write-Host " [ " -NoNewline -ForegroundColor White
+                Write-Host "OK" -NoNewline -ForegroundColor Green
+                Write-Host " ]" -ForegroundColor White
+            } else {
+                Write-Host " [ some files in use, partial delete ]" -ForegroundColor Yellow
+            }
+        }
+    }
+
+    # 3. Delete __pycache__ under script dir
+    Write-Host "Cleaning __pycache__..." -NoNewline -ForegroundColor White
+    $pycacheDirs = Get-ChildItem -Path $scriptDir -Filter "__pycache__" -Recurse -Directory -ErrorAction SilentlyContinue
+    $pycacheFailures = 0
+    foreach ($pc in $pycacheDirs) {
+        if (-not (Remove-PathRobust -Path $pc.FullName)) {
+            $pycacheFailures++
+        }
+    }
+    if ($pycacheFailures -eq 0) {
+        Write-Host " [ " -NoNewline -ForegroundColor White
+        Write-Host "OK" -NoNewline -ForegroundColor Green
+        Write-Host " ]" -ForegroundColor White
+    } else {
+        Write-Host " [ $pycacheFailures folder(s) could not be fully removed ]" -ForegroundColor Yellow
+    }
+
+    # 3b. Delete application settings file
+    $settingsFilePath = Join-Path $scriptDir ".subtitle_tool_settings.json"
+    if (Test-Path $settingsFilePath) {
+        Write-Host "Deleting settings file (.subtitle_tool_settings.json)..." -NoNewline -ForegroundColor White
+        if (Remove-PathRobust -Path $settingsFilePath) {
+            Write-Host " [ " -NoNewline -ForegroundColor White
+            Write-Host "OK" -NoNewline -ForegroundColor Green
+            Write-Host " ]" -ForegroundColor White
+        } else {
+            Write-Host " [ failed ]" -ForegroundColor Yellow
+        }
+    }
+
+    # 4. Delete Whisper model cache
+
+    foreach ($dir in @(
+        (Join-Path $env:USERPROFILE ".cache\whisper"),
+        (Join-Path $env:LOCALAPPDATA "whisper"),
+        (Join-Path $env:APPDATA "whisper")
+    )) {
+        if (Test-Path $dir) {
+            $sizeMB = [math]::Round(
+                (Get-ChildItem $dir -Recurse -ErrorAction SilentlyContinue |
+                 Measure-Object -Property Length -Sum).Sum / 1MB, 1)
+            Write-Host "Deleting Whisper cache ($($sizeMB)MB) $dir..." -NoNewline -ForegroundColor White
+            if (Remove-PathRobust -Path $dir) {
+                Write-Host " [ " -NoNewline -ForegroundColor White
+                Write-Host "OK" -NoNewline -ForegroundColor Green
+                Write-Host " ]" -ForegroundColor White
+            } else {
+                Write-Host " [ some files in use, partial delete ]" -ForegroundColor Yellow
+            }
+        }
+    }
+
+    # 5. Conditionally remove system packages (only what the script installed)
+    if ($hasMfst) {
+        # --- Python ---
+        if (-not $pyPreExisted -and $pyMethod) {
+            Write-Host ""
+            Write-Host "Uninstalling Python 3.11 via $pyMethod..." -ForegroundColor White
+            switch ($pyMethod) {
+                "winget" {
+                    winget uninstall --id Python.Python.3.11 --silent --accept-source-agreements 2>&1 | Out-Null
+                    if ($LASTEXITCODE -eq 0) {
+                        Write-Host "  Python uninstalled." -ForegroundColor Green
+                    } else {
+                        # Also try 3.11.* catch-all
+                        winget uninstall --name "Python 3.11" --silent 2>&1 | Out-Null
+                        Write-Host "  Python uninstall attempted (check Apps & Features if it persists)." -ForegroundColor Yellow
+                    }
+                }
+                "choco" {
+                    choco uninstall python311 -y --remove-dependencies 2>&1 | Out-Null
+                    Write-Host "  Python uninstalled via Chocolatey." -ForegroundColor Green
+                }
+                default {
+                    Write-Host "  Install method '$pyMethod' - please remove Python manually via Apps & Features." -ForegroundColor Yellow
+                }
+            }
+        }
+
+        # --- ffmpeg ---
+        if (-not $ffPreExisted -and $ffMethod) {
+            Write-Host ""
+            Write-Host "Uninstalling ffmpeg via $ffMethod..." -ForegroundColor White
+            switch ($ffMethod) {
+                "winget" {
+                    winget uninstall --id Gyan.FFmpeg --silent 2>&1 | Out-Null
+                    if ($LASTEXITCODE -ne 0) {
+                        # Some bundles register under a slightly different id
+                        winget uninstall --name "ffmpeg" --silent 2>&1 | Out-Null
+                    }
+                    Write-Host "  ffmpeg uninstalled." -ForegroundColor Green
+                }
+                "choco" {
+                    choco uninstall ffmpeg -y 2>&1 | Out-Null
+                    Write-Host "  ffmpeg uninstalled via Chocolatey." -ForegroundColor Green
+                }
+                "scoop" {
+                    scoop uninstall ffmpeg 2>&1 | Out-Null
+                    Write-Host "  ffmpeg uninstalled via Scoop." -ForegroundColor Green
+                }
+                default {
+                    Write-Host "  Install method '$ffMethod' - please remove ffmpeg manually." -ForegroundColor Yellow
+                }
+            }
+        }
+
+        # --- Visual C++ Redistributable ---
+        if (-not $vcPreExisted -and $vcMethod) {
+            Write-Host ""
+            Write-Host "Uninstalling Visual C++ Redistributable via $vcMethod..." -ForegroundColor White
+            switch ($vcMethod) {
+                "winget" {
+                    winget uninstall --id Microsoft.VCRedist.2015+.x64 --silent 2>&1 | Out-Null
+                    Write-Host "  VC++ Redistributable uninstalled." -ForegroundColor Green
+                }
+                "choco" {
+                    choco uninstall vcredist-all -y 2>&1 | Out-Null
+                    Write-Host "  VC++ Redistributable uninstalled via Chocolatey." -ForegroundColor Green
+                }
+                default {
+                    Write-Host "  Install method '$vcMethod' - please remove VC++ manually via Apps & Features." -ForegroundColor Yellow
+                }
+            }
+        }
+
+        # 6. Delete the manifest itself (clean slate for future installs)
+        if (Test-Path $manifestPath) {
+            Remove-Item $manifestPath -Force -ErrorAction SilentlyContinue
+            Write-Host ""
+            Write-Host "Install manifest removed." -ForegroundColor Gray
+        }
+    }
+
+    Write-Host ""
+    Write-Host "=== Uninstall Complete ===" -ForegroundColor Green
+    Write-Host ""
+    Write-Host "To reinstall, run:  install_all_windows.bat" -ForegroundColor Cyan
+    Write-Host ""
+    if (-not $NoPause) { Read-Host "Press Enter to close" }
+    exit 0
+}
 
 Write-Host "=== Installer Bootstrap ===" -ForegroundColor Cyan
 Write-Host "Script path: $($MyInvocation.MyCommand.Path)"
@@ -644,9 +1093,21 @@ Write-Host ""
 # Ensure we have a package manager
 Ensure-PackageManager
 
+# Record whether each system component pre-existed before this install run.
+# This drives the uninstall logic - we only remove what we put there.
+$manifest = Read-InstallManifest
+# Initialise tracking vars (may be overwritten below)
+$script:PythonPreExisted  = $true
+$script:PythonInstallUsed = ""       # winget | choco | manual
+$script:VCRedistPreExisted   = $true
+$script:VCRedistInstallUsed  = ""
+$script:FfmpegPreExisted  = $true
+$script:FfmpegInstallUsed = ""
+
 Write-Host "Checking Python installation" -NoNewline -ForegroundColor White
 $pythonCmd = Find-PythonCommand
 if (-not $pythonCmd) {
+    $script:PythonPreExisted = $false
     Write-Host "" # New line
     $detectedVersion = ""
     if (Test-CommandAvailable "python") {
@@ -660,6 +1121,14 @@ if (-not $pythonCmd) {
         Write-Host "Detected unsupported Python version $detectedVersion. Installing Python 3.11..." -ForegroundColor Yellow
     } else {
         Write-Host "Python not found. Installing Python 3.11..." -ForegroundColor Yellow
+    }
+    # Determine which method actually installs Python so we can uninstall later
+    if ($PythonInstallMethod -eq "winget" -or ($PythonInstallMethod -eq "auto" -and (Test-CommandAvailable "winget"))) {
+        $script:PythonInstallUsed = "winget"
+    } elseif ($PythonInstallMethod -eq "choco" -or ($PythonInstallMethod -eq "auto" -and (Test-CommandAvailable "choco"))) {
+        $script:PythonInstallUsed = "choco"
+    } else {
+        $script:PythonInstallUsed = "manual"
     }
     Install-Python -Method $PythonInstallMethod
     $pythonCmd = Find-PythonCommand
@@ -797,6 +1266,15 @@ if ($aiAlreadyInstalled) {
     # Check and install VC++ if needed (before prompting about AI)
     Write-Host "Checking Visual C++ Redistributable..." -NoNewline -ForegroundColor White
     if (-not (Test-VCRedist)) {
+        $script:VCRedistPreExisted = $false
+        # Record which package manager will be used for VC++ so uninstall can reverse it
+        if (Test-CommandAvailable "winget") {
+            $script:VCRedistInstallUsed = "winget"
+        } elseif (Test-CommandAvailable "choco") {
+            $script:VCRedistInstallUsed = "choco"
+        } else {
+            $script:VCRedistInstallUsed = "manual"
+        }
         Write-Host " NOT FOUND" -ForegroundColor Yellow
         Write-Host ""
         Write-Host "PyTorch (required for AI features) needs Visual C++ Redistributable." -ForegroundColor Yellow
@@ -1005,6 +1483,20 @@ if (-not (Test-Path $ffmpegInstallerPath)) {
     throw "ffmpeg installer script not found at $ffmpegInstallerPath"
 }
 
+# Track whether ffmpeg pre-existed before this run
+if (-not (Test-CommandAvailable "ffmpeg") -or -not (Test-CommandAvailable "ffprobe")) {
+    $script:FfmpegPreExisted = $false
+    if ($FfmpegInstallMethod -eq "winget" -or ($FfmpegInstallMethod -eq "auto" -and (Test-CommandAvailable "winget"))) {
+        $script:FfmpegInstallUsed = "winget"
+    } elseif ($FfmpegInstallMethod -eq "choco" -or ($FfmpegInstallMethod -eq "auto" -and (Test-CommandAvailable "choco"))) {
+        $script:FfmpegInstallUsed = "choco"
+    } elseif ($FfmpegInstallMethod -eq "scoop" -or ($FfmpegInstallMethod -eq "auto" -and (Test-CommandAvailable "scoop"))) {
+        $script:FfmpegInstallUsed = "scoop"
+    } else {
+        $script:FfmpegInstallUsed = "unknown"
+    }
+}
+
 Write-Host "Installing ffmpeg/ffprobe" -NoNewline -ForegroundColor White
 powershell -NoProfile -ExecutionPolicy Bypass -File "$ffmpegInstallerPath" -Method $FfmpegInstallMethod 2>&1 | Out-Null
 if ($LASTEXITCODE -ne 0) {
@@ -1055,9 +1547,57 @@ Write-Host " [ " -NoNewline -ForegroundColor White
 Write-Host "OK" -NoNewline -ForegroundColor Green
 Write-Host " ]" -ForegroundColor White
 
-Write-Host ""
-Write-Host "=== Installation Complete ==="
+# Test cinemagoer (optional - IMDB episode name lookup)
+Write-Host "cinemagoer (IMDB lookup)" -NoNewline -ForegroundColor White
+$previousErrorActionPreference = $ErrorActionPreference
+$ErrorActionPreference = "SilentlyContinue"
+$cinemagoerTest = & $venvPythonCmd -c "from imdb import Cinemagoer; print('ok')" 2>&1
+$ErrorActionPreference = $previousErrorActionPreference
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "..." -NoNewline -ForegroundColor White
+    Write-Host " [ " -NoNewline -ForegroundColor White
+    Write-Host "SKIP" -NoNewline -ForegroundColor Yellow
+    Write-Host " ]" -ForegroundColor White
+    Write-Host "  cinemagoer not available - IMDB episode lookup will be disabled." -ForegroundColor DarkYellow
+    Write-Host "  Install with: pip install cinemagoer" -ForegroundColor DarkYellow
+} else {
+    Write-Host "..." -NoNewline -ForegroundColor White
+    Write-Host " [ " -NoNewline -ForegroundColor White
+    Write-Host "OK" -NoNewline -ForegroundColor Green
+    Write-Host " ]" -ForegroundColor White
+}
 Write-StatusOK "All components installed and verified"
+
+# ---------------------------------------------------------------------------
+# Write install manifest so the uninstaller knows what we set up.
+# ---------------------------------------------------------------------------
+$newManifest = @{
+    install_date        = (Get-Date -Format "yyyy-MM-dd HH:mm")
+    script_version      = "1.0"
+    python = @{
+        pre_existed     = $script:PythonPreExisted
+        install_method  = if ($script:PythonPreExisted) { "" } else { $script:PythonInstallUsed }
+        version         = if ($venvVersion) { $venvVersion } else { "" }
+    }
+    vcredist = @{
+        pre_existed     = $script:VCRedistPreExisted
+        install_method  = if ($script:VCRedistPreExisted) { "" } else { $script:VCRedistInstallUsed }
+    }
+    ffmpeg = @{
+        pre_existed     = $script:FfmpegPreExisted
+        install_method  = if ($script:FfmpegPreExisted) { "" } else { $script:FfmpegInstallUsed }
+    }
+    venv = @{
+        path            = $venvPath
+        created_by_script = $true
+    }
+    ai = @{
+        installed       = ($aiSettingOverride -eq $true)
+    }
+}
+Save-InstallManifest -Manifest $newManifest
+Write-Host "Install manifest saved to: $manifestPath" -ForegroundColor Gray
+
 Write-Host ""
 Write-Host "Launching Subtitle Tool GUI..." -ForegroundColor Cyan
 Write-Host ""

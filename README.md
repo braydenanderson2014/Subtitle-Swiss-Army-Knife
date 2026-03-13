@@ -150,6 +150,12 @@ In GUI mode:
 - Leave it blank to use the default built-in behavior.
 - A starter template is included at:
   - `Python Projects/Subtitle/organize_media_rules.example.json`
+- Additional presets are included at:
+  - `Python Projects/Subtitle/json_examples/media_rules_balanced.json`
+  - `Python Projects/Subtitle/json_examples/media_rules_aggressive_scene.json`
+  - `Python Projects/Subtitle/json_examples/media_rules_minimal_cleanup.json`
+  - `Python Projects/Subtitle/json_examples/media_rules_movie_year_focus.json`
+  - `Python Projects/Subtitle/json_examples/media_rules_tv_episode_focus.json`
 
 Example behavior with rules:
 - `Show.Name.S01E02.1080p.WEBRip.x265-GRP.mkv` → `Show Name - S01E02.mkv`

@@ -1,0 +1,89 @@
+{
+  "_description": "Balanced cleanup for common torrent-style names. Good default for mixed movie/TV libraries.",
+  "_example_movie": "Movie.Title.2024.1080p.BluRay.x264-GROUP -> Movie Title 2024",
+  "_example_tv": "Show.Name.S01E02.1080p.WEB-DL.x265-GROUP -> Show Name - S01E02",
+  "movie_name": {
+    "_comment": "Movie cleanup keeps title/year and strips quality/codec/release tags.",
+    "normalize_separators": true,
+    "strip_bracketed": true,
+    "cutoff_tokens": [
+      "\\b2160p\\b",
+      "\\b1080p\\b",
+      "\\b720p\\b",
+      "\\bWEB[-_. ]?DL\\b",
+      "\\bWEB[-_. ]?Rip\\b",
+      "\\bBlu[-_. ]?Ray\\b",
+      "\\bBRRip\\b",
+      "\\bBDRip\\b",
+      "\\bDVDRip\\b",
+      "\\bHDRip\\b",
+      "\\bREMUX\\b",
+      "\\bx264\\b",
+      "\\bx265\\b",
+      "\\bHEVC\\b",
+      "\\bAVC\\b",
+      "\\bAAC\\b",
+      "\\bDDP?5\\.1\\b",
+      "\\bAtmos\\b",
+      "\\bYTS\\b",
+      "\\bRARBG\\b"
+    ],
+    "cleanup_regex": [
+      {
+        "pattern": "[-_]+",
+        "replace": " "
+      },
+      {
+        "pattern": "\\s{2,}",
+        "replace": " "
+      }
+    ]
+  },
+  "tv_name": {
+    "_comment": "TV cleanup with common episode formats.",
+    "template": "{clean_name} - {season_episode}",
+    "normalize_separators": true,
+    "strip_bracketed": true,
+    "patterns": [
+      {
+        "pattern": "(?i)S(?P<season>\\d{1,2})E(?P<episode>\\d{1,3})"
+      },
+      {
+        "pattern": "(?i)(?P<season>\\d{1,2})x(?P<episode>\\d{1,3})"
+      },
+      {
+        "pattern": "(?i)Season[ ._-]?(?P<season>\\d{1,2})[ ._-]*Episode[ ._-]?(?P<episode>\\d{1,3})"
+      }
+    ],
+    "cutoff_tokens": [
+      "\\b2160p\\b",
+      "\\b1080p\\b",
+      "\\b720p\\b",
+      "\\bWEB[-_. ]?DL\\b",
+      "\\bWEB[-_. ]?Rip\\b",
+      "\\bBlu[-_. ]?Ray\\b",
+      "\\bBRRip\\b",
+      "\\bBDRip\\b",
+      "\\bDVDRip\\b",
+      "\\bHDRip\\b",
+      "\\bREMUX\\b",
+      "\\bx264\\b",
+      "\\bx265\\b",
+      "\\bHEVC\\b",
+      "\\bAAC\\b",
+      "\\bDDP?5\\.1\\b",
+      "\\bYTS\\b",
+      "\\bRARBG\\b"
+    ],
+    "cleanup_regex": [
+      {
+        "pattern": "[-_]+",
+        "replace": " "
+      },
+      {
+        "pattern": "\\s{2,}",
+        "replace": " "
+      }
+    ]
+  }
+}

@@ -2,6 +2,10 @@ PyQt6>=6.6.0
 fastapi>=0.115.0
 uvicorn[standard]>=0.30.0
 
+# IMDB episode name lookup (optional - used when imdb_lookup.enabled = true in organize rules JSON)
+# Lightweight, no GPU or PyTorch required.
+cinemagoer>=2023.1.1
+
 # AI libraries are optional - install separately with requirements_ai.txt
 # openai-whisper>=20231117
 # pysubs2>=1.6.0
