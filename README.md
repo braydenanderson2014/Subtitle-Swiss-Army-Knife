@@ -13,6 +13,7 @@ This tool scans video folders, removes embedded subtitle streams, and can add su
 - **Media Organization**: Automatically organize movies and TV shows.
 - **Metadata Repair**: Fix corrupted video containers.
 - **AI Subtitle Generation** (Optional): Generate subtitles from video audio using Whisper AI.
+- **AI Audio Language Tagging** (Optional): Detect audio-stream language with Whisper and write stream language metadata tags.
 - FastAPI service mode with background job execution.
 
 ## Requirements
@@ -207,6 +208,20 @@ python "Python Projects/Subtitle/subtitle_tool.py" gui --use-ai
 5. SRT files are created next to your videos
 
 **Note**: First run downloads the selected model. Processing time depends on model size and video length.
+
+### AI Audio Language Detection + Metadata Tagging
+
+Use Whisper to detect language for each audio stream, then write language tags back into container metadata.
+
+- Supports `random snippets` mode (faster, default) and `whole stream` mode (slower, deeper analysis).
+- Can preserve existing language tags or overwrite them.
+- Works in GUI (`Detect + Tag Audio Language`) and CLI.
+
+CLI example:
+
+```bash
+python "Python Projects/Subtitle/subtitle_tool.py" tag-audio-language --folders "D:\\Videos" --strategy snippets --snippets 3 --sample-seconds 25
+```
 
 ### Model Sizes
 

@@ -1,1415 +1,231 @@
-=== Tutorial Overlay Debug Log ===
-Started at: 2026-03-09 17:22:29.631566
 
-[17:22:29.631] TutorialOverlay created with parent: QWidget
-[17:22:29.632] TutorialOverlay initialization complete
-
-[17:22:29.634] ===== Showing Step 0 =====
+[21:10:45.671] ===== Showing Step 0 =====
   Title: Welcome to Subtitle Tool!
   Widget from step.get('widget'): None
   Widget type: None
-[17:22:29.635] highlight_widget called with: None
-[17:22:29.636] Geometry set to: PyQt6.QtCore.QRect(0, 0, 980, 940)
-[17:22:29.638] Overlay shown, isVisible: True
-[17:22:29.639] No animation (no widget)
-[17:22:29.641] Update called
-[17:22:29.683] paintEvent called! Widget: None, Phase: 0.00
-[17:22:29.688] Drawing full overlay (no widget)
-[17:22:29.702] paintEvent called! Widget: None, Phase: 0.00
-[17:22:29.705] Drawing full overlay (no widget)
 
-[17:22:32.313] ===== Showing Step 1 =====
+[21:10:50.574] ===== Showing Step 1 =====
   Title: Target Folders
-  Widget from step.get('widget'): <PyQt6.QtWidgets.QListWidget object at 0x00000250B7BF1E50>
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QListWidget object at 0x000002D584C39BD0>
   Widget type: None
-[17:22:32.313] highlight_widget called with: QListWidget
-[17:22:32.314] Geometry set to: PyQt6.QtCore.QRect(0, 0, 980, 940)
-[17:22:32.315] Overlay shown, isVisible: True
-[17:22:32.316] Animation started
-[17:22:32.317] Update called
-[17:22:32.352] paintEvent called! Widget: QListWidget, Phase: 0.00
-[17:22:32.353] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.390] paintEvent called! Widget: QListWidget, Phase: 0.08
-[17:22:32.391] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.416] paintEvent called! Widget: QListWidget, Phase: 0.16
-[17:22:32.418] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.446] paintEvent called! Widget: QListWidget, Phase: 0.24
-[17:22:32.447] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.472] paintEvent called! Widget: QListWidget, Phase: 0.32
-[17:22:32.474] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.510] paintEvent called! Widget: QListWidget, Phase: 0.40
-[17:22:32.511] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.548] paintEvent called! Widget: QListWidget, Phase: 0.48
-[17:22:32.550] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.579] paintEvent called! Widget: QListWidget, Phase: 0.56
-[17:22:32.580] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.612] paintEvent called! Widget: QListWidget, Phase: 0.64
-[17:22:32.614] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.645] paintEvent called! Widget: QListWidget, Phase: 0.72
-[17:22:32.647] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.678] paintEvent called! Widget: QListWidget, Phase: 0.80
-[17:22:32.680] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.711] paintEvent called! Widget: QListWidget, Phase: 0.88
-[17:22:32.718] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.747] paintEvent called! Widget: QListWidget, Phase: 0.96
-[17:22:32.749] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.782] paintEvent called! Widget: QListWidget, Phase: 1.00
-[17:22:32.785] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.812] paintEvent called! Widget: QListWidget, Phase: 0.92
-[17:22:32.814] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.842] paintEvent called! Widget: QListWidget, Phase: 0.84
-[17:22:32.843] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.871] paintEvent called! Widget: QListWidget, Phase: 0.76
-[17:22:32.872] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.903] paintEvent called! Widget: QListWidget, Phase: 0.68
-[17:22:32.905] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.935] paintEvent called! Widget: QListWidget, Phase: 0.60
-[17:22:32.937] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:32.972] paintEvent called! Widget: QListWidget, Phase: 0.52
-[17:22:32.974] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.001] paintEvent called! Widget: QListWidget, Phase: 0.44
-[17:22:33.003] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.032] paintEvent called! Widget: QListWidget, Phase: 0.36
-[17:22:33.036] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.062] paintEvent called! Widget: QListWidget, Phase: 0.28
-[17:22:33.065] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.086] paintEvent called! Widget: QListWidget, Phase: 0.20
-[17:22:33.089] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.129] paintEvent called! Widget: QListWidget, Phase: 0.12
-[17:22:33.137] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.164] paintEvent called! Widget: QListWidget, Phase: 0.04
-[17:22:33.165] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.191] paintEvent called! Widget: QListWidget, Phase: 0.00
-[17:22:33.193] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.219] paintEvent called! Widget: QListWidget, Phase: 0.08
-[17:22:33.220] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.249] paintEvent called! Widget: QListWidget, Phase: 0.16
-[17:22:33.250] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.278] paintEvent called! Widget: QListWidget, Phase: 0.24
-[17:22:33.279] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.319] paintEvent called! Widget: QListWidget, Phase: 0.32
-[17:22:33.322] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.348] paintEvent called! Widget: QListWidget, Phase: 0.40
-[17:22:33.350] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.378] paintEvent called! Widget: QListWidget, Phase: 0.48
-[17:22:33.380] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.401] paintEvent called! Widget: QListWidget, Phase: 0.56
-[17:22:33.402] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.425] paintEvent called! Widget: QListWidget, Phase: 0.64
-[17:22:33.427] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.452] paintEvent called! Widget: QListWidget, Phase: 0.72
-[17:22:33.455] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.494] paintEvent called! Widget: QListWidget, Phase: 0.80
-[17:22:33.496] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.531] paintEvent called! Widget: QListWidget, Phase: 0.88
-[17:22:33.534] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.557] paintEvent called! Widget: QListWidget, Phase: 0.96
-[17:22:33.558] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.585] paintEvent called! Widget: QListWidget, Phase: 1.00
-[17:22:33.587] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.624] paintEvent called! Widget: QListWidget, Phase: 0.92
-[17:22:33.625] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.647] paintEvent called! Widget: QListWidget, Phase: 0.84
-[17:22:33.649] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.680] paintEvent called! Widget: QListWidget, Phase: 0.76
-[17:22:33.681] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.715] paintEvent called! Widget: QListWidget, Phase: 0.68
-[17:22:33.719] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.742] paintEvent called! Widget: QListWidget, Phase: 0.60
-[17:22:33.744] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.771] paintEvent called! Widget: QListWidget, Phase: 0.52
-[17:22:33.773] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.808] paintEvent called! Widget: QListWidget, Phase: 0.44
-[17:22:33.809] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.848] paintEvent called! Widget: QListWidget, Phase: 0.36
-[17:22:33.850] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.878] paintEvent called! Widget: QListWidget, Phase: 0.28
-[17:22:33.881] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.923] paintEvent called! Widget: QListWidget, Phase: 0.20
-[17:22:33.925] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.949] paintEvent called! Widget: QListWidget, Phase: 0.12
-[17:22:33.950] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:33.988] paintEvent called! Widget: QListWidget, Phase: 0.04
-[17:22:33.991] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.023] paintEvent called! Widget: QListWidget, Phase: 0.00
-[17:22:34.026] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.055] paintEvent called! Widget: QListWidget, Phase: 0.08
-[17:22:34.057] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.081] paintEvent called! Widget: QListWidget, Phase: 0.16
-[17:22:34.082] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.117] paintEvent called! Widget: QListWidget, Phase: 0.24
-[17:22:34.118] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.156] paintEvent called! Widget: QListWidget, Phase: 0.32
-[17:22:34.158] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.194] paintEvent called! Widget: QListWidget, Phase: 0.40
-[17:22:34.195] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.224] paintEvent called! Widget: QListWidget, Phase: 0.48
-[17:22:34.226] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.250] paintEvent called! Widget: QListWidget, Phase: 0.56
-[17:22:34.251] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.274] paintEvent called! Widget: QListWidget, Phase: 0.64
-[17:22:34.275] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.304] paintEvent called! Widget: QListWidget, Phase: 0.72
-[17:22:34.305] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.343] paintEvent called! Widget: QListWidget, Phase: 0.80
-[17:22:34.344] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.366] paintEvent called! Widget: QListWidget, Phase: 0.88
-[17:22:34.369] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.395] paintEvent called! Widget: QListWidget, Phase: 0.96
-[17:22:34.396] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.441] paintEvent called! Widget: QListWidget, Phase: 1.00
-[17:22:34.442] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.474] paintEvent called! Widget: QListWidget, Phase: 0.92
-[17:22:34.479] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.515] paintEvent called! Widget: QListWidget, Phase: 0.84
-[17:22:34.518] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.551] paintEvent called! Widget: QListWidget, Phase: 0.76
-[17:22:34.553] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.590] paintEvent called! Widget: QListWidget, Phase: 0.68
-[17:22:34.591] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.615] paintEvent called! Widget: QListWidget, Phase: 0.60
-[17:22:34.616] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.647] paintEvent called! Widget: QListWidget, Phase: 0.52
-[17:22:34.651] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.678] paintEvent called! Widget: QListWidget, Phase: 0.44
-[17:22:34.679] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.709] paintEvent called! Widget: QListWidget, Phase: 0.36
-[17:22:34.710] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.737] paintEvent called! Widget: QListWidget, Phase: 0.28
-[17:22:34.738] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.765] paintEvent called! Widget: QListWidget, Phase: 0.20
-[17:22:34.766] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.817] paintEvent called! Widget: QListWidget, Phase: 0.12
-[17:22:34.818] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.847] paintEvent called! Widget: QListWidget, Phase: 0.04
-[17:22:34.848] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.889] paintEvent called! Widget: QListWidget, Phase: 0.00
-[17:22:34.890] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.919] paintEvent called! Widget: QListWidget, Phase: 0.08
-[17:22:34.920] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.948] paintEvent called! Widget: QListWidget, Phase: 0.16
-[17:22:34.949] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:34.977] paintEvent called! Widget: QListWidget, Phase: 0.24
-[17:22:34.978] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.003] paintEvent called! Widget: QListWidget, Phase: 0.32
-[17:22:35.004] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.037] paintEvent called! Widget: QListWidget, Phase: 0.40
-[17:22:35.038] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.062] paintEvent called! Widget: QListWidget, Phase: 0.48
-[17:22:35.064] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.097] paintEvent called! Widget: QListWidget, Phase: 0.56
-[17:22:35.098] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.131] paintEvent called! Widget: QListWidget, Phase: 0.64
-[17:22:35.133] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.157] paintEvent called! Widget: QListWidget, Phase: 0.72
-[17:22:35.158] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.184] paintEvent called! Widget: QListWidget, Phase: 0.80
-[17:22:35.185] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.220] paintEvent called! Widget: QListWidget, Phase: 0.88
-[17:22:35.221] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.253] paintEvent called! Widget: QListWidget, Phase: 0.96
-[17:22:35.257] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.279] paintEvent called! Widget: QListWidget, Phase: 1.00
-[17:22:35.279] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.317] paintEvent called! Widget: QListWidget, Phase: 0.92
-[17:22:35.318] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.356] paintEvent called! Widget: QListWidget, Phase: 0.84
-[17:22:35.357] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.394] paintEvent called! Widget: QListWidget, Phase: 0.76
-[17:22:35.395] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.433] paintEvent called! Widget: QListWidget, Phase: 0.68
-[17:22:35.434] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.459] paintEvent called! Widget: QListWidget, Phase: 0.60
-[17:22:35.460] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.496] paintEvent called! Widget: QListWidget, Phase: 0.52
-[17:22:35.497] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.525] paintEvent called! Widget: QListWidget, Phase: 0.44
-[17:22:35.526] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.561] paintEvent called! Widget: QListWidget, Phase: 0.36
-[17:22:35.565] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.585] paintEvent called! Widget: QListWidget, Phase: 0.28
-[17:22:35.586] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.611] paintEvent called! Widget: QListWidget, Phase: 0.20
-[17:22:35.614] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.647] paintEvent called! Widget: QListWidget, Phase: 0.12
-[17:22:35.649] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.672] paintEvent called! Widget: QListWidget, Phase: 0.04
-[17:22:35.673] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.713] paintEvent called! Widget: QListWidget, Phase: 0.00
-[17:22:35.714] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.747] paintEvent called! Widget: QListWidget, Phase: 0.08
-[17:22:35.749] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.775] paintEvent called! Widget: QListWidget, Phase: 0.16
-[17:22:35.776] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.807] paintEvent called! Widget: QListWidget, Phase: 0.24
-[17:22:35.808] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.843] paintEvent called! Widget: QListWidget, Phase: 0.32
-[17:22:35.844] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.871] paintEvent called! Widget: QListWidget, Phase: 0.40
-[17:22:35.872] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.900] paintEvent called! Widget: QListWidget, Phase: 0.48
-[17:22:35.901] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.922] paintEvent called! Widget: QListWidget, Phase: 0.56
-[17:22:35.923] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.956] paintEvent called! Widget: QListWidget, Phase: 0.64
-[17:22:35.957] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:35.986] paintEvent called! Widget: QListWidget, Phase: 0.72
-[17:22:35.987] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.037] paintEvent called! Widget: QListWidget, Phase: 0.80
-[17:22:36.039] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.078] paintEvent called! Widget: QListWidget, Phase: 0.88
-[17:22:36.079] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.099] paintEvent called! Widget: QListWidget, Phase: 0.96
-[17:22:36.100] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.143] paintEvent called! Widget: QListWidget, Phase: 1.00
-[17:22:36.144] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.170] paintEvent called! Widget: QListWidget, Phase: 0.92
-[17:22:36.171] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.211] paintEvent called! Widget: QListWidget, Phase: 0.84
-[17:22:36.212] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.241] paintEvent called! Widget: QListWidget, Phase: 0.76
-[17:22:36.242] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.272] paintEvent called! Widget: QListWidget, Phase: 0.68
-[17:22:36.274] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.302] paintEvent called! Widget: QListWidget, Phase: 0.60
-[17:22:36.303] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.341] paintEvent called! Widget: QListWidget, Phase: 0.52
-[17:22:36.343] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.373] paintEvent called! Widget: QListWidget, Phase: 0.44
-[17:22:36.382] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.408] paintEvent called! Widget: QListWidget, Phase: 0.36
-[17:22:36.410] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.429] paintEvent called! Widget: QListWidget, Phase: 0.28
-[17:22:36.431] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.459] paintEvent called! Widget: QListWidget, Phase: 0.20
-[17:22:36.461] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.496] paintEvent called! Widget: QListWidget, Phase: 0.12
-[17:22:36.502] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.533] paintEvent called! Widget: QListWidget, Phase: 0.04
-[17:22:36.534] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.562] paintEvent called! Widget: QListWidget, Phase: 0.00
-[17:22:36.563] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.590] paintEvent called! Widget: QListWidget, Phase: 0.08
-[17:22:36.592] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.614] paintEvent called! Widget: QListWidget, Phase: 0.16
-[17:22:36.615] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.645] paintEvent called! Widget: QListWidget, Phase: 0.24
-[17:22:36.648] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.671] paintEvent called! Widget: QListWidget, Phase: 0.32
-[17:22:36.672] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.720] paintEvent called! Widget: QListWidget, Phase: 0.40
-[17:22:36.721] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.743] paintEvent called! Widget: QListWidget, Phase: 0.48
-[17:22:36.744] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.787] paintEvent called! Widget: QListWidget, Phase: 0.56
-[17:22:36.788] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.815] paintEvent called! Widget: QListWidget, Phase: 0.64
-[17:22:36.816] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.849] paintEvent called! Widget: QListWidget, Phase: 0.72
-[17:22:36.850] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.880] paintEvent called! Widget: QListWidget, Phase: 0.80
-[17:22:36.880] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.908] paintEvent called! Widget: QListWidget, Phase: 0.88
-[17:22:36.909] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.941] paintEvent called! Widget: QListWidget, Phase: 0.96
-[17:22:36.943] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:36.973] paintEvent called! Widget: QListWidget, Phase: 1.00
-[17:22:36.974] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.010] paintEvent called! Widget: QListWidget, Phase: 0.92
-[17:22:37.011] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.038] paintEvent called! Widget: QListWidget, Phase: 0.84
-[17:22:37.039] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.068] paintEvent called! Widget: QListWidget, Phase: 0.76
-[17:22:37.070] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.094] paintEvent called! Widget: QListWidget, Phase: 0.68
-[17:22:37.096] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.130] paintEvent called! Widget: QListWidget, Phase: 0.60
-[17:22:37.131] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.159] paintEvent called! Widget: QListWidget, Phase: 0.52
-[17:22:37.160] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.188] paintEvent called! Widget: QListWidget, Phase: 0.44
-[17:22:37.190] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.239] paintEvent called! Widget: QListWidget, Phase: 0.36
-[17:22:37.240] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.266] paintEvent called! Widget: QListWidget, Phase: 0.28
-[17:22:37.267] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.296] paintEvent called! Widget: QListWidget, Phase: 0.20
-[17:22:37.297] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.342] paintEvent called! Widget: QListWidget, Phase: 0.12
-[17:22:37.343] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.373] paintEvent called! Widget: QListWidget, Phase: 0.04
-[17:22:37.377] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.406] paintEvent called! Widget: QListWidget, Phase: 0.00
-[17:22:37.408] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
-[17:22:37.436] paintEvent called! Widget: QListWidget, Phase: 0.08
-[17:22:37.438] Drawing highlight at: PyQt6.QtCore.QRect(10, 26, 960, 78)
 
-[17:22:37.442] ===== Showing Step 2 =====
+[21:14:34.935] ===== Showing Step 0 =====
+  Title: Welcome to Subtitle Tool!
+  Widget from step.get('widget'): None
+  Widget type: None
+
+[21:14:36.310] ===== Showing Step 1 =====
+  Title: Target Folders
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QListWidget object at 0x000001F15011F4D0>
+  Widget type: None
+
+[21:16:35.343] ===== Showing Step 0 =====
+  Title: Welcome to Subtitle Tool!
+  Widget from step.get('widget'): None
+  Widget type: None
+
+[21:16:36.843] ===== Showing Step 1 =====
+  Title: Target Folders
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QListWidget object at 0x000001EE892CF4D0>
+  Widget type: None
+
+[21:16:41.678] ===== Showing Step 2 =====
   Title: Target Video Files
-  Widget from step.get('widget'): <__main__.DragDropPathListWidget object at 0x00000250B7BF3110>
+  Widget from step.get('widget'): <__main__.DragDropPathListWidget object at 0x000001EE892CF930>
   Widget type: None
-[17:22:37.443] highlight_widget called with: DragDropPathListWidget
-[17:22:37.444] Geometry set to: PyQt6.QtCore.QRect(0, 0, 980, 940)
-[17:22:37.445] Overlay shown, isVisible: True
-[17:22:37.446] Animation started
-[17:22:37.446] Update called
-[17:22:37.477] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.00
-[17:22:37.478] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.502] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.08
-[17:22:37.503] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.531] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.16
-[17:22:37.533] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.558] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.24
-[17:22:37.560] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.590] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.32
-[17:22:37.592] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.619] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.40
-[17:22:37.620] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.647] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.48
-[17:22:37.647] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.676] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.56
-[17:22:37.677] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.719] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.64
-[17:22:37.720] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.752] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.72
-[17:22:37.766] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.797] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.80
-[17:22:37.799] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.827] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.88
-[17:22:37.831] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.850] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.96
-[17:22:37.851] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.879] paintEvent called! Widget: DragDropPathListWidget, Phase: 1.00
-[17:22:37.882] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.921] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.92
-[17:22:37.923] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.952] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.84
-[17:22:37.955] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:37.983] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.76
-[17:22:37.984] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.021] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.68
-[17:22:38.024] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.055] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.60
-[17:22:38.056] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.096] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.52
-[17:22:38.097] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.125] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.44
-[17:22:38.126] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.153] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.36
-[17:22:38.154] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.177] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.28
-[17:22:38.178] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.215] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.20
-[17:22:38.217] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.240] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.12
-[17:22:38.241] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.274] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.04
-[17:22:38.277] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.305] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.00
-[17:22:38.307] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.350] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.08
-[17:22:38.355] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.391] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.16
-[17:22:38.392] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.420] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.24
-[17:22:38.421] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.451] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.32
-[17:22:38.452] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.478] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.40
-[17:22:38.478] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.506] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.48
-[17:22:38.507] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.551] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.56
-[17:22:38.552] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.591] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.64
-[17:22:38.592] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.622] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.72
-[17:22:38.623] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.650] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.80
-[17:22:38.653] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.681] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.88
-[17:22:38.683] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.722] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.96
-[17:22:38.723] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.751] paintEvent called! Widget: DragDropPathListWidget, Phase: 1.00
-[17:22:38.753] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.779] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.92
-[17:22:38.781] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.803] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.84
-[17:22:38.804] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.830] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.76
-[17:22:38.831] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.861] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.68
-[17:22:38.862] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.898] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.60
-[17:22:38.899] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.935] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.52
-[17:22:38.937] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.959] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.44
-[17:22:38.960] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:38.994] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.36
-[17:22:38.997] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.020] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.28
-[17:22:39.021] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.055] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.20
-[17:22:39.056] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.088] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.12
-[17:22:39.090] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.114] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.04
-[17:22:39.115] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.156] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.00
-[17:22:39.157] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.186] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.08
-[17:22:39.187] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.214] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.16
-[17:22:39.215] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.243] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.24
-[17:22:39.244] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.273] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.32
-[17:22:39.274] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.293] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.40
-[17:22:39.295] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.328] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.48
-[17:22:39.329] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.361] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.56
-[17:22:39.362] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.403] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.64
-[17:22:39.404] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.429] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.72
-[17:22:39.444] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.474] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.80
-[17:22:39.489] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.513] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.88
-[17:22:39.518] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.559] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.96
-[17:22:39.560] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.585] paintEvent called! Widget: DragDropPathListWidget, Phase: 1.00
-[17:22:39.590] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.614] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.92
-[17:22:39.615] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.650] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.84
-[17:22:39.656] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.681] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.76
-[17:22:39.682] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.708] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.68
-[17:22:39.709] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.748] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.60
-[17:22:39.749] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.776] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.52
-[17:22:39.777] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.801] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.44
-[17:22:39.802] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.847] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.36
-[17:22:39.848] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.873] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.28
-[17:22:39.875] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.896] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.20
-[17:22:39.897] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.925] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.12
-[17:22:39.926] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:39.955] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.04
-[17:22:39.956] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.000] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.00
-[17:22:40.001] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.025] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.08
-[17:22:40.026] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.055] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.16
-[17:22:40.056] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.083] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.24
-[17:22:40.084] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.119] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.32
-[17:22:40.120] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.155] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.40
-[17:22:40.156] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.182] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.48
-[17:22:40.183] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.207] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.56
-[17:22:40.208] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.236] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.64
-[17:22:40.237] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.275] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.72
-[17:22:40.276] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.304] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.80
-[17:22:40.305] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.327] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.88
-[17:22:40.328] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.355] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.96
-[17:22:40.357] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.400] paintEvent called! Widget: DragDropPathListWidget, Phase: 1.00
-[17:22:40.401] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.436] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.92
-[17:22:40.437] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.466] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.84
-[17:22:40.469] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.499] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.76
-[17:22:40.499] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.524] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.68
-[17:22:40.525] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.550] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.60
-[17:22:40.552] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.583] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.52
-[17:22:40.585] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.617] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.44
-[17:22:40.618] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.637] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.36
-[17:22:40.639] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.681] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.28
-[17:22:40.682] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.707] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.20
-[17:22:40.712] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.753] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.12
-[17:22:40.754] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.782] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.04
-[17:22:40.783] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.807] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.00
-[17:22:40.808] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.828] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.08
-[17:22:40.829] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.860] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.16
-[17:22:40.861] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.888] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.24
-[17:22:40.889] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.928] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.32
-[17:22:40.929] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.971] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.40
-[17:22:40.972] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:40.997] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.48
-[17:22:40.998] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:41.020] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.56
-[17:22:41.021] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:41.054] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.64
-[17:22:41.055] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:41.084] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.72
-[17:22:41.085] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:41.117] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.80
-[17:22:41.118] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
-[17:22:41.146] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.88
-[17:22:41.147] Drawing highlight at: PyQt6.QtCore.QRect(10, 160, 960, 78)
 
-[17:22:41.152] ===== Showing Step 3 =====
+[21:16:46.841] ===== Showing Step 3 =====
   Title: Manual Subtitle Assignment
-  Widget from step.get('widget'): <__main__.DragDropPathListWidget object at 0x00000250B7BF3610>
+  Widget from step.get('widget'): <__main__.DragDropPathListWidget object at 0x000001EE892CFE30>
   Widget type: None
-[17:22:41.152] highlight_widget called with: DragDropPathListWidget
-[17:22:41.153] Geometry set to: PyQt6.QtCore.QRect(0, 0, 980, 940)
-[17:22:41.154] Overlay shown, isVisible: True
-[17:22:41.155] Animation started
-[17:22:41.156] Update called
-[17:22:41.186] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.00
-[17:22:41.187] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.210] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.08
-[17:22:41.210] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.240] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.16
-[17:22:41.241] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.266] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.24
-[17:22:41.269] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.298] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.32
-[17:22:41.299] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.331] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.40
-[17:22:41.332] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.358] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.48
-[17:22:41.360] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.401] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.56
-[17:22:41.402] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.434] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.64
-[17:22:41.436] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.467] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.72
-[17:22:41.469] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.492] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.80
-[17:22:41.493] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.532] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.88
-[17:22:41.535] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.561] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.96
-[17:22:41.563] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.586] paintEvent called! Widget: DragDropPathListWidget, Phase: 1.00
-[17:22:41.587] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.615] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.92
-[17:22:41.616] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.649] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.84
-[17:22:41.650] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.672] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.76
-[17:22:41.673] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.714] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.68
-[17:22:41.717] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.745] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.60
-[17:22:41.746] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.771] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.52
-[17:22:41.777] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.805] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.44
-[17:22:41.806] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.837] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.36
-[17:22:41.838] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.871] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.28
-[17:22:41.872] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.906] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.20
-[17:22:41.907] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.951] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.12
-[17:22:41.953] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:41.975] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.04
-[17:22:41.977] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.009] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.00
-[17:22:42.010] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.044] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.08
-[17:22:42.045] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.067] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.16
-[17:22:42.068] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.102] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.24
-[17:22:42.104] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.135] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.32
-[17:22:42.136] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.162] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.40
-[17:22:42.163] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.187] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.48
-[17:22:42.188] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.221] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.56
-[17:22:42.222] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.255] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.64
-[17:22:42.256] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.275] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.72
-[17:22:42.276] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.308] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.80
-[17:22:42.309] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.358] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.88
-[17:22:42.360] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.396] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.96
-[17:22:42.397] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.426] paintEvent called! Widget: DragDropPathListWidget, Phase: 1.00
-[17:22:42.427] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.455] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.92
-[17:22:42.456] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.488] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.84
-[17:22:42.489] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.528] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.76
-[17:22:42.529] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.553] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.68
-[17:22:42.555] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.590] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.60
-[17:22:42.591] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.613] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.52
-[17:22:42.614] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.657] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.44
-[17:22:42.658] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.684] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.36
-[17:22:42.685] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.715] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.28
-[17:22:42.716] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.740] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.20
-[17:22:42.741] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.774] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.12
-[17:22:42.776] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.804] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.04
-[17:22:42.806] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.829] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.00
-[17:22:42.830] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.869] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.08
-[17:22:42.870] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.898] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.16
-[17:22:42.900] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.922] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.24
-[17:22:42.923] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.957] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.32
-[17:22:42.959] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:42.993] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.40
-[17:22:42.995] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.021] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.48
-[17:22:43.022] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.054] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.56
-[17:22:43.055] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.087] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.64
-[17:22:43.088] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.115] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.72
-[17:22:43.117] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.155] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.80
-[17:22:43.156] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.186] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.88
-[17:22:43.187] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.217] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.96
-[17:22:43.218] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.242] paintEvent called! Widget: DragDropPathListWidget, Phase: 1.00
-[17:22:43.248] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.276] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.92
-[17:22:43.277] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.312] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.84
-[17:22:43.319] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.351] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.76
-[17:22:43.356] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.379] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.68
-[17:22:43.381] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.407] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.60
-[17:22:43.408] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.438] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.52
-[17:22:43.439] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.473] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.44
-[17:22:43.475] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.515] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.36
-[17:22:43.516] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.541] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.28
-[17:22:43.542] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.572] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.20
-[17:22:43.573] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.602] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.12
-[17:22:43.603] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.634] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.04
-[17:22:43.635] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.672] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.00
-[17:22:43.673] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.705] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.08
-[17:22:43.707] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.735] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.16
-[17:22:43.736] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.762] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.24
-[17:22:43.763] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.790] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.32
-[17:22:43.791] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.830] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.40
-[17:22:43.831] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.856] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.48
-[17:22:43.857] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.889] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.56
-[17:22:43.890] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.916] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.64
-[17:22:43.919] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.963] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.72
-[17:22:43.964] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:43.989] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.80
-[17:22:43.990] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
-[17:22:44.016] paintEvent called! Widget: DragDropPathListWidget, Phase: 0.88
-[17:22:44.017] Drawing highlight at: PyQt6.QtCore.QRect(10, 316, 960, 78)
 
-[17:22:44.022] ===== Showing Step 4 =====
+[21:16:58.982] ===== Showing Step 4 =====
   Title: Processing Options
-  Widget from step.get('widget'): <PyQt6.QtWidgets.QCheckBox object at 0x00000250B7BF3B10>
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QCheckBox object at 0x000001EE8A298370>
   Widget type: QCheckBox
   Widget isVisible: True
-  Widget geometry: PyQt6.QtCore.QRect(11, 27, 940, 24)
-[17:22:44.022] highlight_widget called with: QCheckBox
-[17:22:44.024] Geometry set to: PyQt6.QtCore.QRect(0, 0, 980, 940)
-[17:22:44.026] Overlay shown, isVisible: True
-[17:22:44.029] Animation started
-[17:22:44.029] Update called
-[17:22:44.066] paintEvent called! Widget: QCheckBox, Phase: 0.00
-[17:22:44.067] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.095] paintEvent called! Widget: QCheckBox, Phase: 0.08
-[17:22:44.097] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.121] paintEvent called! Widget: QCheckBox, Phase: 0.16
-[17:22:44.123] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.157] paintEvent called! Widget: QCheckBox, Phase: 0.24
-[17:22:44.158] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.186] paintEvent called! Widget: QCheckBox, Phase: 0.32
-[17:22:44.188] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.215] paintEvent called! Widget: QCheckBox, Phase: 0.40
-[17:22:44.216] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.247] paintEvent called! Widget: QCheckBox, Phase: 0.48
-[17:22:44.247] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.273] paintEvent called! Widget: QCheckBox, Phase: 0.56
-[17:22:44.275] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.300] paintEvent called! Widget: QCheckBox, Phase: 0.64
-[17:22:44.301] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.331] paintEvent called! Widget: QCheckBox, Phase: 0.72
-[17:22:44.333] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.377] paintEvent called! Widget: QCheckBox, Phase: 0.80
-[17:22:44.379] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.407] paintEvent called! Widget: QCheckBox, Phase: 0.88
-[17:22:44.409] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.435] paintEvent called! Widget: QCheckBox, Phase: 0.96
-[17:22:44.436] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.468] paintEvent called! Widget: QCheckBox, Phase: 1.00
-[17:22:44.469] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.490] paintEvent called! Widget: QCheckBox, Phase: 0.92
-[17:22:44.494] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.521] paintEvent called! Widget: QCheckBox, Phase: 0.84
-[17:22:44.522] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.549] paintEvent called! Widget: QCheckBox, Phase: 0.76
-[17:22:44.550] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.579] paintEvent called! Widget: QCheckBox, Phase: 0.68
-[17:22:44.581] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.626] paintEvent called! Widget: QCheckBox, Phase: 0.60
-[17:22:44.627] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.658] paintEvent called! Widget: QCheckBox, Phase: 0.52
-[17:22:44.658] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.684] paintEvent called! Widget: QCheckBox, Phase: 0.44
-[17:22:44.685] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.728] paintEvent called! Widget: QCheckBox, Phase: 0.36
-[17:22:44.729] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.754] paintEvent called! Widget: QCheckBox, Phase: 0.28
-[17:22:44.757] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.786] paintEvent called! Widget: QCheckBox, Phase: 0.20
-[17:22:44.787] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.820] paintEvent called! Widget: QCheckBox, Phase: 0.12
-[17:22:44.821] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.849] paintEvent called! Widget: QCheckBox, Phase: 0.04
-[17:22:44.850] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.879] paintEvent called! Widget: QCheckBox, Phase: 0.00
-[17:22:44.880] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.906] paintEvent called! Widget: QCheckBox, Phase: 0.08
-[17:22:44.907] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.941] paintEvent called! Widget: QCheckBox, Phase: 0.16
-[17:22:44.942] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:44.969] paintEvent called! Widget: QCheckBox, Phase: 0.24
-[17:22:44.974] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.006] paintEvent called! Widget: QCheckBox, Phase: 0.32
-[17:22:45.007] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.048] paintEvent called! Widget: QCheckBox, Phase: 0.40
-[17:22:45.049] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.080] paintEvent called! Widget: QCheckBox, Phase: 0.48
-[17:22:45.082] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.112] paintEvent called! Widget: QCheckBox, Phase: 0.56
-[17:22:45.113] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.141] paintEvent called! Widget: QCheckBox, Phase: 0.64
-[17:22:45.142] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.174] paintEvent called! Widget: QCheckBox, Phase: 0.72
-[17:22:45.175] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.214] paintEvent called! Widget: QCheckBox, Phase: 0.80
-[17:22:45.215] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.242] paintEvent called! Widget: QCheckBox, Phase: 0.88
-[17:22:45.242] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.271] paintEvent called! Widget: QCheckBox, Phase: 0.96
-[17:22:45.272] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.308] paintEvent called! Widget: QCheckBox, Phase: 1.00
-[17:22:45.309] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.338] paintEvent called! Widget: QCheckBox, Phase: 0.92
-[17:22:45.339] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.370] paintEvent called! Widget: QCheckBox, Phase: 0.84
-[17:22:45.371] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.403] paintEvent called! Widget: QCheckBox, Phase: 0.76
-[17:22:45.404] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.431] paintEvent called! Widget: QCheckBox, Phase: 0.68
-[17:22:45.432] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.461] paintEvent called! Widget: QCheckBox, Phase: 0.60
-[17:22:45.462] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.498] paintEvent called! Widget: QCheckBox, Phase: 0.52
-[17:22:45.499] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.524] paintEvent called! Widget: QCheckBox, Phase: 0.44
-[17:22:45.525] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.546] paintEvent called! Widget: QCheckBox, Phase: 0.36
-[17:22:45.547] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.588] paintEvent called! Widget: QCheckBox, Phase: 0.28
-[17:22:45.589] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.615] paintEvent called! Widget: QCheckBox, Phase: 0.20
-[17:22:45.617] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.647] paintEvent called! Widget: QCheckBox, Phase: 0.12
-[17:22:45.648] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.677] paintEvent called! Widget: QCheckBox, Phase: 0.04
-[17:22:45.678] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.715] paintEvent called! Widget: QCheckBox, Phase: 0.00
-[17:22:45.718] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.749] paintEvent called! Widget: QCheckBox, Phase: 0.08
-[17:22:45.750] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.780] paintEvent called! Widget: QCheckBox, Phase: 0.16
-[17:22:45.783] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.815] paintEvent called! Widget: QCheckBox, Phase: 0.24
-[17:22:45.816] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.847] paintEvent called! Widget: QCheckBox, Phase: 0.32
-[17:22:45.848] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.875] paintEvent called! Widget: QCheckBox, Phase: 0.40
-[17:22:45.877] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.906] paintEvent called! Widget: QCheckBox, Phase: 0.48
-[17:22:45.908] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.933] paintEvent called! Widget: QCheckBox, Phase: 0.56
-[17:22:45.934] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.963] paintEvent called! Widget: QCheckBox, Phase: 0.64
-[17:22:45.964] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:45.989] paintEvent called! Widget: QCheckBox, Phase: 0.72
-[17:22:45.990] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.024] paintEvent called! Widget: QCheckBox, Phase: 0.80
-[17:22:46.025] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.048] paintEvent called! Widget: QCheckBox, Phase: 0.88
-[17:22:46.049] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.087] paintEvent called! Widget: QCheckBox, Phase: 0.96
-[17:22:46.088] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.116] paintEvent called! Widget: QCheckBox, Phase: 1.00
-[17:22:46.117] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.153] paintEvent called! Widget: QCheckBox, Phase: 0.92
-[17:22:46.154] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.185] paintEvent called! Widget: QCheckBox, Phase: 0.84
-[17:22:46.186] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.215] paintEvent called! Widget: QCheckBox, Phase: 0.76
-[17:22:46.216] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.241] paintEvent called! Widget: QCheckBox, Phase: 0.68
-[17:22:46.242] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.269] paintEvent called! Widget: QCheckBox, Phase: 0.60
-[17:22:46.270] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.302] paintEvent called! Widget: QCheckBox, Phase: 0.52
-[17:22:46.303] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.330] paintEvent called! Widget: QCheckBox, Phase: 0.44
-[17:22:46.333] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.368] paintEvent called! Widget: QCheckBox, Phase: 0.36
-[17:22:46.369] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.389] paintEvent called! Widget: QCheckBox, Phase: 0.28
-[17:22:46.390] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.428] paintEvent called! Widget: QCheckBox, Phase: 0.20
-[17:22:46.429] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.457] paintEvent called! Widget: QCheckBox, Phase: 0.12
-[17:22:46.458] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.493] paintEvent called! Widget: QCheckBox, Phase: 0.04
-[17:22:46.495] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.520] paintEvent called! Widget: QCheckBox, Phase: 0.00
-[17:22:46.521] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.546] paintEvent called! Widget: QCheckBox, Phase: 0.08
-[17:22:46.549] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.576] paintEvent called! Widget: QCheckBox, Phase: 0.16
-[17:22:46.577] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.613] paintEvent called! Widget: QCheckBox, Phase: 0.24
-[17:22:46.614] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.644] paintEvent called! Widget: QCheckBox, Phase: 0.32
-[17:22:46.646] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.686] paintEvent called! Widget: QCheckBox, Phase: 0.40
-[17:22:46.688] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.715] paintEvent called! Widget: QCheckBox, Phase: 0.48
-[17:22:46.716] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.745] paintEvent called! Widget: QCheckBox, Phase: 0.56
-[17:22:46.750] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.780] paintEvent called! Widget: QCheckBox, Phase: 0.64
-[17:22:46.781] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.810] paintEvent called! Widget: QCheckBox, Phase: 0.72
-[17:22:46.812] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.837] paintEvent called! Widget: QCheckBox, Phase: 0.80
-[17:22:46.838] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.861] paintEvent called! Widget: QCheckBox, Phase: 0.88
-[17:22:46.862] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.902] paintEvent called! Widget: QCheckBox, Phase: 0.96
-[17:22:46.904] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.932] paintEvent called! Widget: QCheckBox, Phase: 1.00
-[17:22:46.933] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.960] paintEvent called! Widget: QCheckBox, Phase: 0.92
-[17:22:46.961] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:46.991] paintEvent called! Widget: QCheckBox, Phase: 0.84
-[17:22:46.992] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.016] paintEvent called! Widget: QCheckBox, Phase: 0.76
-[17:22:47.017] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.040] paintEvent called! Widget: QCheckBox, Phase: 0.68
-[17:22:47.042] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.088] paintEvent called! Widget: QCheckBox, Phase: 0.60
-[17:22:47.090] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.117] paintEvent called! Widget: QCheckBox, Phase: 0.52
-[17:22:47.119] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.149] paintEvent called! Widget: QCheckBox, Phase: 0.44
-[17:22:47.150] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.178] paintEvent called! Widget: QCheckBox, Phase: 0.36
-[17:22:47.180] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.211] paintEvent called! Widget: QCheckBox, Phase: 0.28
-[17:22:47.212] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.237] paintEvent called! Widget: QCheckBox, Phase: 0.20
-[17:22:47.238] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.266] paintEvent called! Widget: QCheckBox, Phase: 0.12
-[17:22:47.267] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.312] paintEvent called! Widget: QCheckBox, Phase: 0.04
-[17:22:47.313] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.339] paintEvent called! Widget: QCheckBox, Phase: 0.00
-[17:22:47.342] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.368] paintEvent called! Widget: QCheckBox, Phase: 0.08
-[17:22:47.369] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.398] paintEvent called! Widget: QCheckBox, Phase: 0.16
-[17:22:47.400] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.428] paintEvent called! Widget: QCheckBox, Phase: 0.24
-[17:22:47.428] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.466] paintEvent called! Widget: QCheckBox, Phase: 0.32
-[17:22:47.469] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.498] paintEvent called! Widget: QCheckBox, Phase: 0.40
-[17:22:47.501] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.522] paintEvent called! Widget: QCheckBox, Phase: 0.48
-[17:22:47.536] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.563] paintEvent called! Widget: QCheckBox, Phase: 0.56
-[17:22:47.564] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.583] paintEvent called! Widget: QCheckBox, Phase: 0.64
-[17:22:47.585] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.611] paintEvent called! Widget: QCheckBox, Phase: 0.72
-[17:22:47.613] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.638] paintEvent called! Widget: QCheckBox, Phase: 0.80
-[17:22:47.640] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.674] paintEvent called! Widget: QCheckBox, Phase: 0.88
-[17:22:47.676] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.713] paintEvent called! Widget: QCheckBox, Phase: 0.96
-[17:22:47.715] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.752] paintEvent called! Widget: QCheckBox, Phase: 1.00
-[17:22:47.756] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.791] paintEvent called! Widget: QCheckBox, Phase: 0.92
-[17:22:47.793] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.822] paintEvent called! Widget: QCheckBox, Phase: 0.84
-[17:22:47.823] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.861] paintEvent called! Widget: QCheckBox, Phase: 0.76
-[17:22:47.862] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.887] paintEvent called! Widget: QCheckBox, Phase: 0.68
-[17:22:47.888] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.931] paintEvent called! Widget: QCheckBox, Phase: 0.60
-[17:22:47.933] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.958] paintEvent called! Widget: QCheckBox, Phase: 0.52
-[17:22:47.959] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:47.992] paintEvent called! Widget: QCheckBox, Phase: 0.44
-[17:22:47.993] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:48.017] paintEvent called! Widget: QCheckBox, Phase: 0.36
-[17:22:48.018] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:48.061] paintEvent called! Widget: QCheckBox, Phase: 0.28
-[17:22:48.062] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:48.089] paintEvent called! Widget: QCheckBox, Phase: 0.20
-[17:22:48.090] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:48.116] paintEvent called! Widget: QCheckBox, Phase: 0.12
-[17:22:48.119] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:48.150] paintEvent called! Widget: QCheckBox, Phase: 0.04
-[17:22:48.151] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:48.177] paintEvent called! Widget: QCheckBox, Phase: 0.00
-[17:22:48.179] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
-[17:22:48.207] paintEvent called! Widget: QCheckBox, Phase: 0.08
-[17:22:48.208] Drawing highlight at: PyQt6.QtCore.QRect(10, 472, 960, 44)
+  Widget geometry: PyQt6.QtCore.QRect(10, 30, 928, 20)
 
-[17:22:48.212] ===== Showing Step 5 =====
+[21:17:02.715] ===== Showing Step 5 =====
   Title: Scan Videos
-  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x00000250B7C72F30>
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x000001EE8A298CD0>
   Widget type: QPushButton
   Widget isVisible: True
-  Widget geometry: PyQt6.QtCore.QRect(9, 757, 236, 26)
-[17:22:48.212] highlight_widget called with: QPushButton
-[17:22:48.213] Geometry set to: PyQt6.QtCore.QRect(0, 0, 980, 940)
-[17:22:48.214] Overlay shown, isVisible: True
-[17:22:48.216] Animation started
-[17:22:48.217] Update called
-[17:22:48.247] paintEvent called! Widget: QPushButton, Phase: 0.00
-[17:22:48.249] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.269] paintEvent called! Widget: QPushButton, Phase: 0.08
-[17:22:48.271] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.313] paintEvent called! Widget: QPushButton, Phase: 0.16
-[17:22:48.316] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.340] paintEvent called! Widget: QPushButton, Phase: 0.24
-[17:22:48.341] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.363] paintEvent called! Widget: QPushButton, Phase: 0.32
-[17:22:48.363] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.410] paintEvent called! Widget: QPushButton, Phase: 0.40
-[17:22:48.412] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.430] paintEvent called! Widget: QPushButton, Phase: 0.48
-[17:22:48.430] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.465] paintEvent called! Widget: QPushButton, Phase: 0.56
-[17:22:48.467] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.485] paintEvent called! Widget: QPushButton, Phase: 0.64
-[17:22:48.485] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.529] paintEvent called! Widget: QPushButton, Phase: 0.72
-[17:22:48.531] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.558] paintEvent called! Widget: QPushButton, Phase: 0.80
-[17:22:48.560] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.589] paintEvent called! Widget: QPushButton, Phase: 0.88
-[17:22:48.591] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.613] paintEvent called! Widget: QPushButton, Phase: 0.96
-[17:22:48.614] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.645] paintEvent called! Widget: QPushButton, Phase: 1.00
-[17:22:48.647] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.671] paintEvent called! Widget: QPushButton, Phase: 0.92
-[17:22:48.672] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.705] paintEvent called! Widget: QPushButton, Phase: 0.84
-[17:22:48.707] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.742] paintEvent called! Widget: QPushButton, Phase: 0.76
-[17:22:48.743] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.765] paintEvent called! Widget: QPushButton, Phase: 0.68
-[17:22:48.767] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.820] paintEvent called! Widget: QPushButton, Phase: 0.60
-[17:22:48.822] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.850] paintEvent called! Widget: QPushButton, Phase: 0.52
-[17:22:48.851] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.876] paintEvent called! Widget: QPushButton, Phase: 0.44
-[17:22:48.877] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.903] paintEvent called! Widget: QPushButton, Phase: 0.36
-[17:22:48.906] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.927] paintEvent called! Widget: QPushButton, Phase: 0.28
-[17:22:48.929] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.961] paintEvent called! Widget: QPushButton, Phase: 0.20
-[17:22:48.962] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:48.985] paintEvent called! Widget: QPushButton, Phase: 0.12
-[17:22:48.986] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.024] paintEvent called! Widget: QPushButton, Phase: 0.04
-[17:22:49.025] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.052] paintEvent called! Widget: QPushButton, Phase: 0.00
-[17:22:49.053] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.086] paintEvent called! Widget: QPushButton, Phase: 0.08
-[17:22:49.087] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.116] paintEvent called! Widget: QPushButton, Phase: 0.16
-[17:22:49.118] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.150] paintEvent called! Widget: QPushButton, Phase: 0.24
-[17:22:49.151] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.167] paintEvent called! Widget: QPushButton, Phase: 0.32
-[17:22:49.168] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.207] paintEvent called! Widget: QPushButton, Phase: 0.40
-[17:22:49.209] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.240] paintEvent called! Widget: QPushButton, Phase: 0.48
-[17:22:49.241] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.275] paintEvent called! Widget: QPushButton, Phase: 0.56
-[17:22:49.277] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.299] paintEvent called! Widget: QPushButton, Phase: 0.64
-[17:22:49.300] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.347] paintEvent called! Widget: QPushButton, Phase: 0.72
-[17:22:49.348] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.375] paintEvent called! Widget: QPushButton, Phase: 0.80
-[17:22:49.377] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.409] paintEvent called! Widget: QPushButton, Phase: 0.88
-[17:22:49.411] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.432] paintEvent called! Widget: QPushButton, Phase: 0.96
-[17:22:49.433] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.471] paintEvent called! Widget: QPushButton, Phase: 1.00
-[17:22:49.473] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.495] paintEvent called! Widget: QPushButton, Phase: 0.92
-[17:22:49.496] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.543] paintEvent called! Widget: QPushButton, Phase: 0.84
-[17:22:49.543] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.578] paintEvent called! Widget: QPushButton, Phase: 0.76
-[17:22:49.580] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.605] paintEvent called! Widget: QPushButton, Phase: 0.68
-[17:22:49.606] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.629] paintEvent called! Widget: QPushButton, Phase: 0.60
-[17:22:49.630] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.667] paintEvent called! Widget: QPushButton, Phase: 0.52
-[17:22:49.668] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.691] paintEvent called! Widget: QPushButton, Phase: 0.44
-[17:22:49.692] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.725] paintEvent called! Widget: QPushButton, Phase: 0.36
-[17:22:49.726] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.766] paintEvent called! Widget: QPushButton, Phase: 0.28
-[17:22:49.767] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.795] paintEvent called! Widget: QPushButton, Phase: 0.20
-[17:22:49.797] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.814] paintEvent called! Widget: QPushButton, Phase: 0.12
-[17:22:49.819] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.852] paintEvent called! Widget: QPushButton, Phase: 0.04
-[17:22:49.853] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.879] paintEvent called! Widget: QPushButton, Phase: 0.00
-[17:22:49.880] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.932] paintEvent called! Widget: QPushButton, Phase: 0.08
-[17:22:49.933] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.956] paintEvent called! Widget: QPushButton, Phase: 0.16
-[17:22:49.959] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:49.994] paintEvent called! Widget: QPushButton, Phase: 0.24
-[17:22:49.996] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.024] paintEvent called! Widget: QPushButton, Phase: 0.32
-[17:22:50.025] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.042] paintEvent called! Widget: QPushButton, Phase: 0.40
-[17:22:50.043] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.079] paintEvent called! Widget: QPushButton, Phase: 0.48
-[17:22:50.080] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.110] paintEvent called! Widget: QPushButton, Phase: 0.56
-[17:22:50.112] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.136] paintEvent called! Widget: QPushButton, Phase: 0.64
-[17:22:50.137] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.168] paintEvent called! Widget: QPushButton, Phase: 0.72
-[17:22:50.169] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.203] paintEvent called! Widget: QPushButton, Phase: 0.80
-[17:22:50.204] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.236] paintEvent called! Widget: QPushButton, Phase: 0.88
-[17:22:50.237] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.274] paintEvent called! Widget: QPushButton, Phase: 0.96
-[17:22:50.275] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.301] paintEvent called! Widget: QPushButton, Phase: 1.00
-[17:22:50.302] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.333] paintEvent called! Widget: QPushButton, Phase: 0.92
-[17:22:50.334] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.370] paintEvent called! Widget: QPushButton, Phase: 0.84
-[17:22:50.372] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.409] paintEvent called! Widget: QPushButton, Phase: 0.76
-[17:22:50.411] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.434] paintEvent called! Widget: QPushButton, Phase: 0.68
-[17:22:50.438] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.469] paintEvent called! Widget: QPushButton, Phase: 0.60
-[17:22:50.471] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.496] paintEvent called! Widget: QPushButton, Phase: 0.52
-[17:22:50.497] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.529] paintEvent called! Widget: QPushButton, Phase: 0.44
-[17:22:50.531] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.557] paintEvent called! Widget: QPushButton, Phase: 0.36
-[17:22:50.558] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.593] paintEvent called! Widget: QPushButton, Phase: 0.28
-[17:22:50.595] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.624] paintEvent called! Widget: QPushButton, Phase: 0.20
-[17:22:50.626] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.649] paintEvent called! Widget: QPushButton, Phase: 0.12
-[17:22:50.651] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.682] paintEvent called! Widget: QPushButton, Phase: 0.04
-[17:22:50.683] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.711] paintEvent called! Widget: QPushButton, Phase: 0.00
-[17:22:50.713] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.743] paintEvent called! Widget: QPushButton, Phase: 0.08
-[17:22:50.745] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.774] paintEvent called! Widget: QPushButton, Phase: 0.16
-[17:22:50.777] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.803] paintEvent called! Widget: QPushButton, Phase: 0.24
-[17:22:50.807] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.832] paintEvent called! Widget: QPushButton, Phase: 0.32
-[17:22:50.835] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.865] paintEvent called! Widget: QPushButton, Phase: 0.40
-[17:22:50.866] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.890] paintEvent called! Widget: QPushButton, Phase: 0.48
-[17:22:50.891] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.927] paintEvent called! Widget: QPushButton, Phase: 0.56
-[17:22:50.928] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.970] paintEvent called! Widget: QPushButton, Phase: 0.64
-[17:22:50.971] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:50.997] paintEvent called! Widget: QPushButton, Phase: 0.72
-[17:22:50.998] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.031] paintEvent called! Widget: QPushButton, Phase: 0.80
-[17:22:51.032] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.061] paintEvent called! Widget: QPushButton, Phase: 0.88
-[17:22:51.062] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.094] paintEvent called! Widget: QPushButton, Phase: 0.96
-[17:22:51.095] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.120] paintEvent called! Widget: QPushButton, Phase: 1.00
-[17:22:51.121] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.152] paintEvent called! Widget: QPushButton, Phase: 0.92
-[17:22:51.153] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.177] paintEvent called! Widget: QPushButton, Phase: 0.84
-[17:22:51.178] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.198] paintEvent called! Widget: QPushButton, Phase: 0.76
-[17:22:51.199] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.241] paintEvent called! Widget: QPushButton, Phase: 0.68
-[17:22:51.242] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.270] paintEvent called! Widget: QPushButton, Phase: 0.60
-[17:22:51.271] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.297] paintEvent called! Widget: QPushButton, Phase: 0.52
-[17:22:51.298] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.332] paintEvent called! Widget: QPushButton, Phase: 0.44
-[17:22:51.333] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.367] paintEvent called! Widget: QPushButton, Phase: 0.36
-[17:22:51.369] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.402] paintEvent called! Widget: QPushButton, Phase: 0.28
-[17:22:51.407] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.428] paintEvent called! Widget: QPushButton, Phase: 0.20
-[17:22:51.430] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.459] paintEvent called! Widget: QPushButton, Phase: 0.12
-[17:22:51.460] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.486] paintEvent called! Widget: QPushButton, Phase: 0.04
-[17:22:51.487] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.518] paintEvent called! Widget: QPushButton, Phase: 0.00
-[17:22:51.520] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.548] paintEvent called! Widget: QPushButton, Phase: 0.08
-[17:22:51.549] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.590] paintEvent called! Widget: QPushButton, Phase: 0.16
-[17:22:51.592] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.620] paintEvent called! Widget: QPushButton, Phase: 0.24
-[17:22:51.621] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.644] paintEvent called! Widget: QPushButton, Phase: 0.32
-[17:22:51.645] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.683] paintEvent called! Widget: QPushButton, Phase: 0.40
-[17:22:51.684] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.721] paintEvent called! Widget: QPushButton, Phase: 0.48
-[17:22:51.722] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.752] paintEvent called! Widget: QPushButton, Phase: 0.56
-[17:22:51.753] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.796] paintEvent called! Widget: QPushButton, Phase: 0.64
-[17:22:51.798] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.814] paintEvent called! Widget: QPushButton, Phase: 0.72
-[17:22:51.815] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.852] paintEvent called! Widget: QPushButton, Phase: 0.80
-[17:22:51.853] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.872] paintEvent called! Widget: QPushButton, Phase: 0.88
-[17:22:51.873] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.905] paintEvent called! Widget: QPushButton, Phase: 0.96
-[17:22:51.906] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.958] paintEvent called! Widget: QPushButton, Phase: 1.00
-[17:22:51.960] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:51.989] paintEvent called! Widget: QPushButton, Phase: 0.92
-[17:22:51.990] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.030] paintEvent called! Widget: QPushButton, Phase: 0.84
-[17:22:52.031] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.066] paintEvent called! Widget: QPushButton, Phase: 0.76
-[17:22:52.067] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.096] paintEvent called! Widget: QPushButton, Phase: 0.68
-[17:22:52.098] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.117] paintEvent called! Widget: QPushButton, Phase: 0.60
-[17:22:52.121] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.147] paintEvent called! Widget: QPushButton, Phase: 0.52
-[17:22:52.149] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.174] paintEvent called! Widget: QPushButton, Phase: 0.44
-[17:22:52.175] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.202] paintEvent called! Widget: QPushButton, Phase: 0.36
-[17:22:52.203] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.248] paintEvent called! Widget: QPushButton, Phase: 0.28
-[17:22:52.249] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.266] paintEvent called! Widget: QPushButton, Phase: 0.20
-[17:22:52.267] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.299] paintEvent called! Widget: QPushButton, Phase: 0.12
-[17:22:52.301] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.330] paintEvent called! Widget: QPushButton, Phase: 0.04
-[17:22:52.331] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.363] paintEvent called! Widget: QPushButton, Phase: 0.00
-[17:22:52.364] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.399] paintEvent called! Widget: QPushButton, Phase: 0.08
-[17:22:52.400] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.430] paintEvent called! Widget: QPushButton, Phase: 0.16
-[17:22:52.431] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.452] paintEvent called! Widget: QPushButton, Phase: 0.24
-[17:22:52.453] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.485] paintEvent called! Widget: QPushButton, Phase: 0.32
-[17:22:52.487] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.524] paintEvent called! Widget: QPushButton, Phase: 0.40
-[17:22:52.525] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.551] paintEvent called! Widget: QPushButton, Phase: 0.48
-[17:22:52.552] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.583] paintEvent called! Widget: QPushButton, Phase: 0.56
-[17:22:52.585] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.611] paintEvent called! Widget: QPushButton, Phase: 0.64
-[17:22:52.613] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.646] paintEvent called! Widget: QPushButton, Phase: 0.72
-[17:22:52.647] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.670] paintEvent called! Widget: QPushButton, Phase: 0.80
-[17:22:52.671] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.702] paintEvent called! Widget: QPushButton, Phase: 0.88
-[17:22:52.704] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.738] paintEvent called! Widget: QPushButton, Phase: 0.96
-[17:22:52.739] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.769] paintEvent called! Widget: QPushButton, Phase: 1.00
-[17:22:52.771] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.806] paintEvent called! Widget: QPushButton, Phase: 0.92
-[17:22:52.807] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.828] paintEvent called! Widget: QPushButton, Phase: 0.84
-[17:22:52.829] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.864] paintEvent called! Widget: QPushButton, Phase: 0.76
-[17:22:52.865] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.895] paintEvent called! Widget: QPushButton, Phase: 0.68
-[17:22:52.896] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.925] paintEvent called! Widget: QPushButton, Phase: 0.60
-[17:22:52.926] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:52.967] paintEvent called! Widget: QPushButton, Phase: 0.52
-[17:22:52.969] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.001] paintEvent called! Widget: QPushButton, Phase: 0.44
-[17:22:53.005] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.037] paintEvent called! Widget: QPushButton, Phase: 0.36
-[17:22:53.039] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.059] paintEvent called! Widget: QPushButton, Phase: 0.28
-[17:22:53.061] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.106] paintEvent called! Widget: QPushButton, Phase: 0.20
-[17:22:53.109] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.154] paintEvent called! Widget: QPushButton, Phase: 0.12
-[17:22:53.156] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.177] paintEvent called! Widget: QPushButton, Phase: 0.04
-[17:22:53.178] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.207] paintEvent called! Widget: QPushButton, Phase: 0.00
-[17:22:53.208] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.243] paintEvent called! Widget: QPushButton, Phase: 0.08
-[17:22:53.244] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.287] paintEvent called! Widget: QPushButton, Phase: 0.16
-[17:22:53.288] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.313] paintEvent called! Widget: QPushButton, Phase: 0.24
-[17:22:53.315] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.362] paintEvent called! Widget: QPushButton, Phase: 0.32
-[17:22:53.363] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.392] paintEvent called! Widget: QPushButton, Phase: 0.40
-[17:22:53.394] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.421] paintEvent called! Widget: QPushButton, Phase: 0.48
-[17:22:53.423] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.450] paintEvent called! Widget: QPushButton, Phase: 0.56
-[17:22:53.452] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.478] paintEvent called! Widget: QPushButton, Phase: 0.64
-[17:22:53.480] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.506] paintEvent called! Widget: QPushButton, Phase: 0.72
-[17:22:53.507] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.541] paintEvent called! Widget: QPushButton, Phase: 0.80
-[17:22:53.542] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.570] paintEvent called! Widget: QPushButton, Phase: 0.88
-[17:22:53.572] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.597] paintEvent called! Widget: QPushButton, Phase: 0.96
-[17:22:53.599] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.630] paintEvent called! Widget: QPushButton, Phase: 1.00
-[17:22:53.631] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.656] paintEvent called! Widget: QPushButton, Phase: 0.92
-[17:22:53.657] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.702] paintEvent called! Widget: QPushButton, Phase: 0.84
-[17:22:53.703] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.747] paintEvent called! Widget: QPushButton, Phase: 0.76
-[17:22:53.748] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.774] paintEvent called! Widget: QPushButton, Phase: 0.68
-[17:22:53.775] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
-[17:22:53.876] paintEvent called! Widget: QPushButton, Phase: 0.60
-[17:22:53.878] Drawing highlight at: PyQt6.QtCore.QRect(-1, 747, 256, 46)
+  Widget geometry: PyQt6.QtCore.QRect(9, 877, 233, 28)
+
+[21:17:09.044] ===== Showing Step 6 =====
+  Title: Remove Embedded Subtitles
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x000001EE8A298D70>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(248, 877, 232, 28)
+
+[21:17:29.296] ===== Showing Step 7 =====
+  Title: Include Subtitles Back In
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x000001EE8A298E10>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(486, 877, 233, 28)
+
+[21:17:40.892] ===== Showing Step 8 =====
+  Title: Extract Embedded Subtitles
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x000001EE8A298EB0>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(725, 877, 232, 28)
+
+[21:17:48.293] ===== Showing Step 9 =====
+  Title: Help & Tutorial
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x000001EE8A299090>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(158, 911, 90, 28)
+
+[21:17:55.686] ===== Showing Step 8 =====
+  Title: Extract Embedded Subtitles
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x000001EE8A298EB0>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(725, 877, 232, 28)
+
+[21:17:56.586] ===== Showing Step 9 =====
+  Title: Help & Tutorial
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x000001EE8A299090>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(158, 911, 90, 28)
+
+[21:17:58.715] ===== Showing Step 10 =====
+  Title: Activity Log
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QTextEdit object at 0x000001EE8A299450>
+  Widget type: QTextEdit
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(9, 999, 948, 150)
+
+[21:18:04.184] ===== Showing Step 11 =====
+  Title: Tutorial Complete!
+  Widget from step.get('widget'): None
+  Widget type: None
+
+[22:49:02.528] ===== Showing Step 0 =====
+  Title: Welcome to Subtitle Tool!
+  Widget from step.get('widget'): None
+  Widget type: None
+
+[22:49:05.032] ===== Showing Step 1 =====
+  Title: Target Folders
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QListWidget object at 0x0000023C50DB2490>
+  Widget type: None
+
+[22:49:06.037] ===== Showing Step 2 =====
+  Title: Target Video Files
+  Widget from step.get('widget'): <__main__.DragDropPathListWidget object at 0x0000023C50DB28F0>
+  Widget type: None
+
+[22:49:08.114] ===== Showing Step 3 =====
+  Title: Manual Subtitle Assignment
+  Widget from step.get('widget'): <__main__.DragDropPathListWidget object at 0x0000023C50DB2DF0>
+  Widget type: None
+
+[22:49:10.972] ===== Showing Step 4 =====
+  Title: Processing Options
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QCheckBox object at 0x0000023C50DB32F0>
+  Widget type: QCheckBox
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(10, 30, 928, 20)
+
+[22:49:12.059] ===== Showing Step 5 =====
+  Title: Scan Videos
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x0000023C51BF84B0>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(9, 913, 233, 28)
+
+[22:49:13.674] ===== Showing Step 6 =====
+  Title: Remove Embedded Subtitles
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x0000023C51BF8550>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(248, 913, 232, 28)
+
+[22:49:14.263] ===== Showing Step 7 =====
+  Title: Include Subtitles Back In
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x0000023C51BF85F0>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(486, 913, 233, 28)
+
+[22:49:15.554] ===== Showing Step 8 =====
+  Title: Extract Embedded Subtitles
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x0000023C51BF8690>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(725, 913, 232, 28)
+
+[22:49:16.800] ===== Showing Step 10 =====
+  Title: Convert to MKV/MP4
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x0000023C51BF8190>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(10, 56, 228, 28)
+
+[22:49:20.600] ===== Showing Step 11 =====
+  Title: Organize Media
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x0000023C51BF82D0>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(477, 56, 228, 28)
+
+[22:49:34.802] ===== Showing Step 12 =====
+  Title: Repair Metadata
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x0000023C51BF8370>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(711, 56, 227, 28)
+
+[22:49:47.729] ===== Showing Step 14 =====
+  Title: Organization Options
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QCheckBox object at 0x0000023C50DB3ED0>
+  Widget type: QCheckBox
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(10, 30, 112, 20)
+
+[22:49:53.532] ===== Showing Step 15 =====
+  Title: Help & Tutorial
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x0000023C51BF8870>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(158, 1047, 90, 28)
+
+[22:49:56.071] ===== Showing Step 16 =====
+  Title: Theme Toggle
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x0000023C51BF87D0>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(9, 1047, 143, 28)
+
+[22:49:57.775] ===== Showing Step 17 =====
+  Title: Show Tutorial Button
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x0000023C51BF8910>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(254, 1047, 105, 28)
+
+[22:50:03.329] ===== Showing Step 18 =====
+  Title: Error History
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QPushButton object at 0x0000023C51BF89B0>
+  Widget type: QPushButton
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(365, 1047, 99, 28)
+
+[22:50:05.022] ===== Showing Step 19 =====
+  Title: Activity Log
+  Widget from step.get('widget'): <PyQt6.QtWidgets.QTextEdit object at 0x0000023C51BF8CD0>
+  Widget type: QTextEdit
+  Widget isVisible: True
+  Widget geometry: PyQt6.QtCore.QRect(9, 1135, 948, 150)
+
+[22:50:06.707] ===== Showing Step 20 =====
+  Title: Tutorial Complete!
+  Widget from step.get('widget'): None
+  Widget type: None

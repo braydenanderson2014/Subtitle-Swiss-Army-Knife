@@ -1,0 +1,24 @@
+﻿{
+    "python":  {
+                   "install_method":  "",
+                   "pre_existed":  true,
+                   "version":  "3.11"
+               },
+    "ai":  {
+               "installed":  true
+           },
+    "venv":  {
+                 "path":  "D:\\PythonLibraries\\Subtitle\\venv",
+                 "created_by_script":  true
+             },
+    "script_version":  "1.0",
+    "ffmpeg":  {
+                   "install_method":  "",
+                   "pre_existed":  true
+               },
+    "vcredist":  {
+                     "install_method":  "",
+                     "pre_existed":  true
+                 },
+    "install_date":  "2026-03-17 15:46"
+}

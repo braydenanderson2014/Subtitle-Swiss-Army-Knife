@@ -1,0 +1,38 @@
+{
+  "use_ai": true,
+  "launch_times": [
+    1773804214.771541
+  ],
+  "tutorial_completed": true,
+  "ui_state": {
+    "folders": [],
+    "target_files": [
+      "I:\\HandBrake Input\\The Legend of Tarzan (2016).m2ts"
+    ],
+    "manual_sidecars": {},
+    "recursive": true,
+    "overwrite": false,
+    "extract": true,
+    "export_txt": true,
+    "scan_only_embedded": false,
+    "only_selected_targets": false,
+    "remove_suffix": "_nosubs",
+    "include_suffix": "_withsubs",
+    "extract_suffix": ".embedded_sub",
+    "convert_suffix": "_converted",
+    "organize_movies": true,
+    "organize_tv": true,
+    "organize_rules_path": "",
+    "repair_backup": true,
+    "whisper_model": "large-v3",
+    "whisper_language": "",
+    "audio_lang_strategy": "snippets",
+    "audio_lang_snippets": "5",
+    "audio_lang_seconds": "30",
+    "audio_lang_overwrite": true,
+    "audio_lang_detect_only": false,
+    "sync_language": "",
+    "sync_overwrite": false,
+    "hw_accel": true
+  }
+}
