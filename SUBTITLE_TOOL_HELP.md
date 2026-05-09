@@ -8,6 +8,8 @@ This utility helps you manage subtitle streams in video files.
 - Remove embedded subtitle streams from videos.
 - Include subtitle sidecar files back into videos.
 - Extract embedded subtitle streams to standalone subtitle files.
+- Convert video containers between MKV and MP4 with selectable backends.
+- Repair corrupted containers with richer command diagnostics.
 
 The GUI supports folder scanning and explicit target-file workflows.
 
@@ -68,6 +70,13 @@ Suffix settings:
 - `Extract Embedded Subtitles`: export each subtitle stream to sidecar files.
 - `Open Help`: opens this help document.
 
+### Video Tools Tabs
+
+`Video Tools (Swiss Army Knife)` now has two tabs:
+
+- `Operations`: conversion, organization, repair, and AI workflows.
+- `Tooling & Diagnostics`: configure paths for `ffmpeg`, `ffprobe`, `mkvmerge`, `HandBrakeCLI`, and `makemkvcon`; tune command feedback and ffmpeg/ffprobe log levels; refresh live tool status.
+
 ## Processing Behavior
 
 ### Scan
@@ -88,6 +97,43 @@ Reports, per file:
 - Drops existing embedded subtitle streams.
 - Adds discovered or manually specified sidecar subtitles.
 - For MP4/M4V/MOV outputs, subtitle codec is `mov_text` for compatibility.
+
+### Convert to MKV/MP4
+
+- Supports backend selection: `Auto`, `FFmpeg`, `MKVToolNix (mkvmerge)`, `HandBrakeCLI`.
+- `Auto` prefers MKVToolNix for MKV output and HandBrakeCLI for MP4 output when available.
+- Includes output validation checks (duration/stream sanity) to help catch truncation from corrupt sources.
+
+### Repair Metadata
+
+- Supports backend selection: `Auto`, `FFmpeg`, `MKVToolNix`, `MakeMKV`.
+- `Auto` prefers MKVToolNix for MKV inputs and falls back to FFmpeg otherwise.
+- Validation checks run after repair to detect suspiciously short/corrupt outputs.
+
+### AI Subtitle Generation
+
+- Subtitle generation backend is selectable in the `AI Tools` row.
+- Supported backends:
+	- `Auto`
+	- `OpenAI Whisper`
+	- `faster-whisper`
+	- `WhisperX`
+	- `stable-ts`
+	- `whisper-timestamped`
+	- `SpeechBrain`
+	- `Vosk`
+	- `Text to Timestamps` (built-in heuristic)
+- `Model Size` is mainly used by Whisper-family backends.
+- If a backend is missing, install optional dependencies from `requirements_ai.txt`.
+
+### AI Subtitle Sync
+
+- Sync backend is selectable in the `Subtitle Sync` row.
+- Supported sync backends:
+	- `Whisper Offset` (speech-segment offset voting)
+	- `Aeneas` (text/audio forced alignment)
+
+`pysubs2` is required for subtitle read/write operations (sometimes searched as `pysub2`).
 
 ### Extract Embedded Subtitles
 
@@ -122,6 +168,7 @@ From the repository root:
 ```bash
 python "Python Projects/Subtitle/subtitle_tool.py" gui
 python "Python Projects/Subtitle/subtitle_tool.py" scan --folders "D:\Videos" --only-with-embedded
+python "Python Projects/Subtitle/subtitle_tool.py" scan --folders "D:\Videos" --command-feedback verbose --ffprobe-loglevel warning
 python "Python Projects/Subtitle/subtitle_tool.py" remove --folders "D:\Videos" --suffix _nosubs
 python "Python Projects/Subtitle/subtitle_tool.py" include --folders "D:\Videos" --suffix _withsubs
 python "Python Projects/Subtitle/subtitle_tool.py" extract --folders "D:\Videos" --suffix .embedded_sub

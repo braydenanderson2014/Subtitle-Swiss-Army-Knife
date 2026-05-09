@@ -8,3 +8,18 @@ torch>=2.5,<2.8
 
 openai-whisper>=20231117
 pysubs2>=1.6.0
+
+# Additional optional AI backends supported by the app:
+# Install only the ones you plan to use.
+# faster-whisper>=1.0.3
+# whisperx>=3.1.1
+# stable-ts>=2.17.1
+# whisper-timestamped>=1.15.4
+# speechbrain>=1.0.2
+# vosk>=0.3.45
+# aeneas>=1.7.3.0
+#
+# "Text to Timestamps" is supported as a built-in heuristic backend,
+# so no extra package is required for that mode.
+#
+# Note: Some users search for "pysub2"; the correct package name is "pysubs2".

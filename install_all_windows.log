@@ -1,0 +1,76 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260325133651
+Username: PCSP-2UA8101KHW\brayd
+RunAs User: PCSP-2UA8101KHW\brayd
+Configuration Name: 
+Machine: PCSP-2UA8101KHW (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 2416
+PSVersion: 5.1.26100.7705
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7705
+BuildVersion: 10.0.26100.7705
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+[13:36:51] Environment
+PS D:\Subtitle> .\install_all_windows.ps1
+[13:39:04] Environment
+PS D:\Subtitle> .\install_all_windows.ps1
+[13:42:20] Environment
+PS D:\Subtitle> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+PS D:\Subtitle> cd ..\PythonLibraries\Subtitle\
+PS D:\PythonLibraries\Subtitle> .\install_all_windows.bat
+
+PS D:\PythonLibraries\Subtitle> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+PS D:\PythonLibraries\Subtitle> .\install_all_windows.ps1
+[13:43:04] Environment
+=== Installer Bootstrap ===
+Script path: D:\PythonLibraries\Subtitle\install_all_windows.ps1
+Working directory: D:\PythonLibraries\Subtitle
+PowerShell version: 5.1.26100.7705
+
+Running on D: - pip cache and temp redirected to script directory.
+=== Subtitle Tool Installation ===
+
+Administrator privileges are recommended for selected install options.
+PS D:\PythonLibraries\Subtitle> .\install_all_windows.ps1
+[13:48:22] Environment
+=== Installer Bootstrap ===
+Script path: D:\PythonLibraries\Subtitle\install_all_windows.ps1
+Working directory: D:\PythonLibraries\Subtitle
+PowerShell version: 5.1.26100.7705
+
+Running on D: - pip cache and temp redirected to script directory.
+=== Subtitle Tool Installation ===
+
+Administrator privileges are recommended for selected install options.
+PS D:\PythonLibraries\Subtitle> .\install_all_windows.ps1 -Uninstall
+[13:50:45] Environment
+
+=== Full Uninstall ===
+
+The following will always be removed:
+  - Virtual environment:  D:\PythonLibraries\Subtitle\venv
+  - pip cache dirs (.pip-cache, .pip-tmp)
+  - __pycache__ folders in the script directory
+  - Downloaded Whisper AI model cache
+  - Application settings (.subtitle_tool_settings.json)
+
+System packages (based on install manifest):
+  - Python         was already installed before this script - will NOT be touched
+  - ffmpeg         was already installed before this script - will NOT be touched
+  - VC++ Redist    was already installed before this script - will NOT be touched
+  - MKVToolNix     was already installed before this script - will NOT be touched
+  - HandBrakeCLI   was already installed before this script - will NOT be touched
+  - MakeMKV        was already installed before this script - will NOT be touched
+  - .NET Runtime   was already installed before this script - will NOT be touched
+
+Uninstall cancelled.

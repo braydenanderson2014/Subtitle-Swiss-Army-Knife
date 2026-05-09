@@ -1,14 +1,12 @@
 {
   "use_ai": true,
   "launch_times": [
-    1773804214.771541
+    1774035800.457098
   ],
   "tutorial_completed": true,
   "ui_state": {
     "folders": [],
-    "target_files": [
-      "I:\\HandBrake Input\\The Legend of Tarzan (2016).m2ts"
-    ],
+    "target_files": [],
     "manual_sidecars": {},
     "recursive": true,
     "overwrite": false,
@@ -24,15 +22,29 @@
     "organize_tv": true,
     "organize_rules_path": "",
     "repair_backup": true,
-    "whisper_model": "large-v3",
+    "convert_backend": "auto",
+    "repair_backend": "mkvtoolnix",
+    "ffmpeg_bin": "ffmpeg",
+    "ffprobe_bin": "ffprobe",
+    "mkvmerge_bin": "mkvmerge",
+    "handbrake_bin": "HandBrakeCLI",
+    "makemkvcon_bin": "makemkvcon",
+    "command_feedback": "normal",
+    "ffmpeg_loglevel": "warning",
+    "ffprobe_loglevel": "error",
+    "ai_backend": "auto",
+    "whisper_model": "base",
     "whisper_language": "",
     "audio_lang_strategy": "snippets",
-    "audio_lang_snippets": "5",
-    "audio_lang_seconds": "30",
-    "audio_lang_overwrite": true,
+    "audio_lang_snippets": "3",
+    "audio_lang_seconds": "25",
+    "audio_lang_overwrite": false,
     "audio_lang_detect_only": false,
+    "sync_backend": "auto",
     "sync_language": "",
     "sync_overwrite": false,
-    "hw_accel": true
+    "hw_accel": false,
+    "save_next_to_source": true,
+    "custom_output_dir": ""
   }
 }

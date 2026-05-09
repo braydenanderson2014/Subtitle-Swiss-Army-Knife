@@ -85,6 +85,7 @@ try:
         QPushButton,
         QProgressBar,
         QScrollArea,
+        QTabWidget,
         QTextBrowser,
         QTextEdit,
         QVBoxLayout,
@@ -123,6 +124,7 @@ def probe_ai_runtime() -> Tuple[bool, List[str], Dict[str, str]]:
 
     missing: List[str] = []
     details: Dict[str, str] = {}
+    available_backends: List[str] = ["text-to-timestamps"]
 
     try:
         torch_mod = importlib.import_module("torch")
@@ -135,20 +137,75 @@ def probe_ai_runtime() -> Tuple[bool, List[str], Dict[str, str]]:
         whisper_mod = importlib.import_module("whisper")
         whisper = whisper_mod  # type: ignore[assignment]
         details["whisper"] = str(getattr(whisper_mod, "__version__", "installed"))
+        available_backends.append("openai-whisper")
     except Exception as exc:
         if "openai-whisper / torch" not in missing:
             missing.append("openai-whisper / torch")
         details["whisper_error"] = f"{type(exc).__name__}: {exc}"
 
     try:
+        fw_mod = importlib.import_module("faster_whisper")
+        details["faster_whisper"] = str(getattr(fw_mod, "__version__", "installed"))
+        available_backends.append("faster-whisper")
+    except Exception as exc:
+        details["faster_whisper_error"] = f"{type(exc).__name__}: {exc}"
+
+    try:
+        wx_mod = importlib.import_module("whisperx")
+        details["whisperx"] = str(getattr(wx_mod, "__version__", "installed"))
+        available_backends.append("whisperx")
+    except Exception as exc:
+        details["whisperx_error"] = f"{type(exc).__name__}: {exc}"
+
+    try:
+        st_mod = importlib.import_module("stable_whisper")
+        details["stable_whisper"] = str(getattr(st_mod, "__version__", "installed"))
+        available_backends.append("stable-ts")
+    except Exception as exc:
+        details["stable_whisper_error"] = f"{type(exc).__name__}: {exc}"
+
+    try:
+        wt_mod = importlib.import_module("whisper_timestamped")
+        details["whisper_timestamped"] = str(getattr(wt_mod, "__version__", "installed"))
+        available_backends.append("whisper-timestamped")
+    except Exception as exc:
+        details["whisper_timestamped_error"] = f"{type(exc).__name__}: {exc}"
+
+    try:
+        sb_mod = importlib.import_module("speechbrain")
+        details["speechbrain"] = str(getattr(sb_mod, "__version__", "installed"))
+        available_backends.append("speechbrain")
+    except Exception as exc:
+        details["speechbrain_error"] = f"{type(exc).__name__}: {exc}"
+
+    try:
+        vosk_mod = importlib.import_module("vosk")
+        details["vosk"] = str(getattr(vosk_mod, "__version__", "installed"))
+        available_backends.append("vosk")
+    except Exception as exc:
+        details["vosk_error"] = f"{type(exc).__name__}: {exc}"
+
+    try:
+        aeneas_mod = importlib.import_module("aeneas")
+        details["aeneas"] = str(getattr(aeneas_mod, "__version__", "installed"))
+    except Exception as exc:
+        details["aeneas_error"] = f"{type(exc).__name__}: {exc}"
+
+    try:
         pysubs2_mod = importlib.import_module("pysubs2")
         pysubs2 = pysubs2_mod  # type: ignore[assignment]
         details["pysubs2"] = str(getattr(pysubs2_mod, "VERSION", "installed"))
     except Exception as exc:
-        missing.append("pysubs2")
+        missing.append("pysubs2/pysub2")
         details["pysubs2_error"] = f"{type(exc).__name__}: {exc}"
 
-    return len(missing) == 0, missing, details
+    if len(available_backends) <= 1:
+        missing.append("No supported transcription backend installed")
+
+    details["available_backends"] = ", ".join(sorted(set(available_backends)))
+    ai_ready = len(available_backends) > 1 and pysubs2 is not None
+
+    return ai_ready, missing, details
 
 VIDEO_EXTENSIONS = {
     ".mp4",
@@ -221,6 +278,22 @@ LANGUAGE_CODE_MAP = {
 }
 HELP_DOC_NAME = "SUBTITLE_TOOL_HELP.md"
 SETTINGS_FILE = ".subtitle_tool_settings.json"
+COMMAND_FEEDBACK_LEVELS = {"quiet", "normal", "verbose"}
+FFMPEG_LOGLEVELS = {"quiet", "error", "warning", "info", "verbose"}
+CONVERSION_BACKENDS = {"auto", "ffmpeg", "mkvtoolnix", "handbrake"}
+REPAIR_BACKENDS = {"auto", "ffmpeg", "mkvtoolnix", "makemkv"}
+TRANSCRIBE_BACKENDS = {
+    "auto",
+    "openai-whisper",
+    "faster-whisper",
+    "whisperx",
+    "stable-ts",
+    "whisper-timestamped",
+    "speechbrain",
+    "vosk",
+    "text-to-timestamps",
+}
+SYNC_BACKENDS = {"auto", "whisper-offset", "aeneas"}
 
 
 @dataclass
@@ -255,13 +328,27 @@ class SubtitleProcessor:
         self,
         ffmpeg_bin: Optional[str] = None,
         ffprobe_bin: Optional[str] = None,
+        mkvmerge_bin: Optional[str] = None,
+        handbrake_bin: Optional[str] = None,
+        makemkvcon_bin: Optional[str] = None,
         log_callback: Optional[Callable[[str], None]] = None,
         use_hw_accel: bool = False,
+        command_feedback: str = "normal",
+        ffmpeg_loglevel: str = "warning",
+        ffprobe_loglevel: str = "error",
     ) -> None:
         self.ffmpeg_bin = ffmpeg_bin or "ffmpeg"
         self.ffprobe_bin = ffprobe_bin or "ffprobe"
+        self.mkvmerge_bin = mkvmerge_bin or "mkvmerge"
+        self.handbrake_bin = handbrake_bin or "HandBrakeCLI"
+        self.makemkvcon_bin = makemkvcon_bin or "makemkvcon"
         self.log_callback = log_callback
         self.use_hw_accel = use_hw_accel
+        self.command_feedback = (
+            command_feedback if command_feedback in COMMAND_FEEDBACK_LEVELS else "normal"
+        )
+        self.ffmpeg_loglevel = ffmpeg_loglevel if ffmpeg_loglevel in FFMPEG_LOGLEVELS else "warning"
+        self.ffprobe_loglevel = ffprobe_loglevel if ffprobe_loglevel in FFMPEG_LOGLEVELS else "error"
         # Cache for IMDB episode name lookups - avoids repeated network requests
         # Key: "show_name_lower|season|episode", Value: episode title or None
         self._episode_name_cache: Dict[str, Optional[str]] = {}
@@ -301,14 +388,54 @@ class SubtitleProcessor:
         root.mkdir(parents=True, exist_ok=True)
         return root
 
+    @staticmethod
+    def _resolve_binary(binary_value: str) -> str:
+        if not binary_value:
+            return ""
+        resolved = shutil.which(binary_value)
+        if resolved:
+            return resolved
+        candidate = Path(binary_value).expanduser()
+        if candidate.exists():
+            try:
+                return str(candidate.resolve())
+            except OSError:
+                return str(candidate)
+        return ""
+
+    @staticmethod
+    def _preview_lines(raw_text: str, max_lines: int = 20, max_chars: int = 4000) -> List[str]:
+        text = (raw_text or "").strip()
+        if not text:
+            return []
+        lines = text.splitlines()[:max_lines]
+        if len("\n".join(lines)) > max_chars:
+            trimmed = "\n".join(lines)
+            return [trimmed[:max_chars].rstrip() + " ..."]
+        return lines
+
+    def _log_command_output(self, stream_name: str, raw_text: str, max_lines: int = 20) -> None:
+        for line in self._preview_lines(raw_text, max_lines=max_lines):
+            self._log(f"  {stream_name}: {line}")
+
     def check_dependencies(self) -> Dict[str, object]:
-        ffmpeg = shutil.which(self.ffmpeg_bin)
-        ffprobe = shutil.which(self.ffprobe_bin)
+        ffmpeg = self._resolve_binary(self.ffmpeg_bin)
+        ffprobe = self._resolve_binary(self.ffprobe_bin)
+        mkvmerge = self._resolve_binary(self.mkvmerge_bin)
+        handbrake = self._resolve_binary(self.handbrake_bin)
+        makemkvcon = self._resolve_binary(self.makemkvcon_bin)
         return {
             "ffmpeg_found": bool(ffmpeg),
             "ffprobe_found": bool(ffprobe),
             "ffmpeg_path": ffmpeg or "",
             "ffprobe_path": ffprobe or "",
+            "mkvmerge_found": bool(mkvmerge),
+            "mkvmerge_path": mkvmerge or "",
+            "mkvtoolnix_found": bool(mkvmerge),
+            "handbrake_found": bool(handbrake),
+            "handbrake_path": handbrake or "",
+            "makemkv_found": bool(makemkvcon),
+            "makemkv_path": makemkvcon or "",
         }
 
     def _iter_video_files(self, folders: List[str], recursive: bool) -> Iterable[Path]:
@@ -386,20 +513,38 @@ class SubtitleProcessor:
 
         return sorted(candidates)
 
-    def _run_command(self, args: List[str]) -> subprocess.CompletedProcess[str]:
+    def _run_command(
+        self,
+        args: List[str],
+        *,
+        description: str = "",
+        log_stdout_on_success: bool = False,
+        max_feedback_lines: int = 20,
+    ) -> subprocess.CompletedProcess[str]:
         self._log("Running: " + " ".join(args))
-        return subprocess.run(
+        result = subprocess.run(
             args,
             capture_output=True,
             text=True,
             check=False,
         )
+        if result.returncode != 0:
+            label = description or Path(args[0]).name
+            self._log(f"Command failed ({label}) with exit code {result.returncode}")
+
+        verbose_mode = self.command_feedback == "verbose"
+        show_output = verbose_mode or result.returncode != 0
+        if show_output:
+            self._log_command_output("stderr", result.stderr or "", max_lines=max_feedback_lines)
+            if verbose_mode or log_stdout_on_success or result.returncode != 0:
+                self._log_command_output("stdout", result.stdout or "", max_lines=max_feedback_lines)
+        return result
 
     def _probe_subtitle_streams(self, video_path: Path) -> List[Dict[str, object]]:
         cmd = [
             self.ffprobe_bin,
             "-v",
-            "error",
+            self.ffprobe_loglevel,
             "-select_streams",
             "s",
             "-show_entries",
@@ -427,7 +572,7 @@ class SubtitleProcessor:
         cmd = [
             self.ffprobe_bin,
             "-v",
-            "error",
+            self.ffprobe_loglevel,
             "-select_streams",
             "a",
             "-show_entries",
@@ -455,7 +600,7 @@ class SubtitleProcessor:
         cmd = [
             self.ffprobe_bin,
             "-v",
-            "error",
+            self.ffprobe_loglevel,
             "-show_entries",
             "format=duration",
             "-of",
@@ -479,7 +624,7 @@ class SubtitleProcessor:
         cmd = [
             self.ffprobe_bin,
             "-v",
-            "error",
+            self.ffprobe_loglevel,
             "-show_entries",
             "stream=codec_type",
             "-of",
@@ -557,6 +702,105 @@ class SubtitleProcessor:
         if not source_is_ts and source_size > 0 and output_size < source_size * 0.90:
             return False, f"output size sanity check failed ({output_size:,} vs {source_size:,} bytes)"
 
+        return True, "ok"
+
+    def _validate_transcoded_output(self, source_path: Path, output_path: Path) -> Tuple[bool, str]:
+        if not output_path.exists():
+            return False, "output file missing"
+
+        output_size = output_path.stat().st_size
+        if output_size < 1_000_000:
+            return False, f"output too small ({output_size:,} bytes)"
+
+        source_size = source_path.stat().st_size
+        src_duration = self._probe_media_duration_seconds(source_path)
+        out_duration = self._probe_media_duration_seconds(output_path)
+        if src_duration and out_duration and src_duration > 0:
+            ratio = out_duration / src_duration
+            if ratio < 0.95:
+                return False, (
+                    f"output duration sanity check failed "
+                    f"({out_duration:.2f}s vs source {src_duration:.2f}s)"
+                )
+
+        if source_size >= 5_000_000_000 and output_size < int(source_size * 0.02):
+            return False, (
+                f"output size suspiciously small for large source "
+                f"({output_size:,} vs {source_size:,} bytes)"
+            )
+
+        src_v, src_a, _ = self._probe_stream_counts(source_path)
+        out_v, out_a, _ = self._probe_stream_counts(output_path)
+        if src_v > 0 and out_v == 0:
+            return False, "output has no video streams"
+        if src_a > 0 and out_a == 0:
+            return False, "output has no audio streams"
+        return True, "ok"
+
+    def _choose_conversion_backend(self, target_format: str, preferred_backend: str) -> Tuple[Optional[str], str]:
+        backend = (preferred_backend or "auto").strip().lower()
+        if backend not in CONVERSION_BACKENDS:
+            backend = "auto"
+
+        if backend == "auto":
+            if target_format == "mkv" and self._resolve_binary(self.mkvmerge_bin):
+                return "mkvtoolnix", "auto-selected mkvtoolnix for mkv target"
+            if target_format == "mp4" and self._resolve_binary(self.handbrake_bin):
+                return "handbrake", "auto-selected handbrake for mp4 target"
+            return "ffmpeg", "auto-selected ffmpeg"
+
+        if backend == "mkvtoolnix":
+            if target_format != "mkv":
+                return None, "mkvtoolnix backend supports mkv output only"
+            if not self._resolve_binary(self.mkvmerge_bin):
+                return None, "mkvtoolnix selected but mkvmerge was not found"
+            return "mkvtoolnix", "using mkvtoolnix backend"
+
+        if backend == "handbrake":
+            if not self._resolve_binary(self.handbrake_bin):
+                return None, "handbrake backend selected but HandBrakeCLI was not found"
+            return "handbrake", "using handbrake backend"
+
+        if backend == "ffmpeg":
+            return "ffmpeg", "using ffmpeg backend"
+
+        return None, f"unsupported conversion backend: {backend}"
+
+    def _run_makemkv_repair(self, video: Path, output_path: Path) -> Tuple[bool, str]:
+        temp_root = self._get_temp_workspace_root() / f"makemkv_repair_{uuid.uuid4().hex[:8]}"
+        temp_root.mkdir(parents=True, exist_ok=True)
+
+        cmd = [
+            self.makemkvcon_bin,
+            "--robot",
+            "--messages=-stdout",
+            "--progress=-stdout",
+            "mkv",
+            f"file:{video}",
+            "all",
+            str(temp_root),
+        ]
+        result = self._run_command(
+            cmd,
+            description="makemkv repair",
+            max_feedback_lines=30,
+        )
+        if result.returncode != 0:
+            shutil.rmtree(temp_root, ignore_errors=True)
+            return False, (result.stderr or "").strip()[:300] or "makemkv failed"
+
+        candidates = sorted(temp_root.glob("*.mkv"), key=lambda p: p.stat().st_mtime, reverse=True)
+        if not candidates:
+            shutil.rmtree(temp_root, ignore_errors=True)
+            return False, "makemkv completed but no MKV output was generated"
+
+        try:
+            shutil.move(str(candidates[0]), str(output_path))
+        except OSError as exc:
+            shutil.rmtree(temp_root, ignore_errors=True)
+            return False, f"failed to move makemkv output: {exc}"
+
+        shutil.rmtree(temp_root, ignore_errors=True)
         return True, "ok"
 
     @staticmethod
@@ -1186,6 +1430,7 @@ class SubtitleProcessor:
         overwrite: bool = False,
         output_suffix: str = "_converted",
         output_root: Optional[str] = None,
+        backend: str = "auto",
     ) -> OperationSummary:
         """Convert video files between mkv and mp4 formats while preserving all streams."""
         summary = OperationSummary(action=f"convert_to_{target_format}")
@@ -1235,20 +1480,65 @@ class SubtitleProcessor:
             if overwrite and not output_suffix:
                 replace_target = video
             
-            self._log(f"Converting {video.name} to {target_format.upper()}...")
-            
-            # Build ffmpeg command for format conversion
-            cmd = [self.ffmpeg_bin, *self._hw_accel_flags(), "-i", str(video)]
-            
-            # For MP4, use specific codecs
-            if target_format == "mp4":
-                cmd.extend(["-c:v", "copy", "-c:a", "copy", "-c:s", "mov_text"])
+            selected_backend, backend_reason = self._choose_conversion_backend(target_format, backend)
+            if not selected_backend:
+                summary.failed += 1
+                summary.details.append(
+                    {
+                        "file": str(video),
+                        "status": "failed",
+                        "reason": backend_reason,
+                    }
+                )
+                continue
+
+            self._log(
+                f"Converting {video.name} to {target_format.upper()} "
+                f"using {selected_backend} ({backend_reason})..."
+            )
+
+            if selected_backend == "ffmpeg":
+                cmd = [
+                    self.ffmpeg_bin,
+                    *self._hw_accel_flags(),
+                    "-loglevel",
+                    self.ffmpeg_loglevel,
+                    "-nostats",
+                    "-i",
+                    str(video),
+                    "-map",
+                    "0",
+                ]
+                if target_format == "mp4":
+                    cmd.extend(["-c:v", "copy", "-c:a", "copy", "-c:s", "mov_text"])
+                else:
+                    cmd.extend(["-c", "copy"])
+                cmd.extend(["-y", str(output_path)])
+                result = self._run_command(cmd, description="ffmpeg conversion")
+            elif selected_backend == "mkvtoolnix":
+                cmd = [self.mkvmerge_bin, "-o", str(output_path), str(video)]
+                result = self._run_command(cmd, description="mkvmerge conversion", max_feedback_lines=30)
             else:
-                # For MKV, just copy everything
-                cmd.extend(["-c", "copy"])
-            
-            cmd.extend(["-y", str(output_path)])
-            result = self._run_command(cmd)
+                hb_format = "av_mp4" if target_format == "mp4" else "av_mkv"
+                cmd = [
+                    self.handbrake_bin,
+                    "-i",
+                    str(video),
+                    "-o",
+                    str(output_path),
+                    "--format",
+                    hb_format,
+                    "--all-audio",
+                    "--all-subtitles",
+                    "--aencoder",
+                    "copy",
+                    "--encoder",
+                    "x264",
+                    "--quality",
+                    "20",
+                    "--markers",
+                ]
+                result = self._run_command(cmd, description="HandBrake conversion", max_feedback_lines=30)
             
             if result.returncode != 0:
                 summary.failed += 1
@@ -1257,6 +1547,35 @@ class SubtitleProcessor:
                     "status": "failed",
                     "reason": result.stderr.strip() or "conversion failed"
                 })
+                try:
+                    output_path.unlink(missing_ok=True)
+                except OSError:
+                    pass
+                continue
+
+            if selected_backend == "handbrake":
+                is_valid, invalid_reason = self._validate_transcoded_output(video, output_path)
+            else:
+                is_valid, invalid_reason = self._validate_muxed_output(
+                    video,
+                    output_path,
+                    allow_reduced_subtitles=(target_format == "mp4"),
+                )
+
+            if not is_valid:
+                summary.failed += 1
+                summary.details.append(
+                    {
+                        "file": str(video),
+                        "status": "failed",
+                        "reason": f"conversion validation failed: {invalid_reason}",
+                    }
+                )
+                self._log(f"Validation failed for {video.name}: {invalid_reason}")
+                try:
+                    output_path.unlink(missing_ok=True)
+                except OSError:
+                    pass
                 continue
             
             if replace_target:
@@ -1266,7 +1585,7 @@ class SubtitleProcessor:
             summary.details.append({
                 "file": str(video),
                 "status": "converted",
-                "reason": f"converted from {current_ext} to {target_ext}"
+                "reason": f"converted from {current_ext} to {target_ext} using {selected_backend}"
             })
         
         return summary
@@ -1657,8 +1976,9 @@ class SubtitleProcessor:
         recursive: bool,
         target_files: List[str],
         create_backup: bool = True,
+        backend: str = "auto",
     ) -> OperationSummary:
-        """Repair corrupted video metadata by rebuilding containers with ffmpeg."""
+        """Repair corrupted video metadata by rebuilding containers with selected backend."""
         summary = OperationSummary(action="repair_metadata")
         
         videos = [Path(f) for f in target_files if Path(f).exists()]
@@ -1689,7 +2009,43 @@ class SubtitleProcessor:
                 })
                 continue
             
-            self._log(f"Repairing {video.name}...")
+            source_ext = video.suffix.lower()
+            preferred_backend = (backend or "auto").strip().lower()
+            selected_backend = preferred_backend
+            if selected_backend not in REPAIR_BACKENDS:
+                selected_backend = "auto"
+
+            if selected_backend == "auto":
+                if source_ext == ".mkv" and self._resolve_binary(self.mkvmerge_bin):
+                    selected_backend = "mkvtoolnix"
+                else:
+                    selected_backend = "ffmpeg"
+
+            if selected_backend == "mkvtoolnix" and source_ext != ".mkv":
+                selected_backend = "ffmpeg"
+
+            if selected_backend == "mkvtoolnix" and not self._resolve_binary(self.mkvmerge_bin):
+                selected_backend = "ffmpeg"
+
+            if selected_backend == "makemkv" and not self._resolve_binary(self.makemkvcon_bin):
+                summary.failed += 1
+                summary.details.append({
+                    "file": str(video),
+                    "status": "failed",
+                    "reason": "makemkv backend selected but makemkvcon was not found"
+                })
+                continue
+
+            if selected_backend == "makemkv" and source_ext != ".mkv":
+                summary.failed += 1
+                summary.details.append({
+                    "file": str(video),
+                    "status": "failed",
+                    "reason": "makemkv repair backend currently supports .mkv inputs only"
+                })
+                continue
+
+            self._log(f"Repairing {video.name} using {selected_backend} backend...")
             
             # Create backup if requested
             if create_backup and backup_dir:
@@ -1705,22 +2061,50 @@ class SubtitleProcessor:
             temp_file = video.with_name(f"{video.stem}_repair_temp{video.suffix}")
             
             try:
-                # Use aggressive error handling to rebuild container
-                cmd = [
-                    self.ffmpeg_bin,
-                    *self._hw_accel_flags(),
-                    "-fflags", "+genpts",  # Generate presentation timestamps
-                    "-err_detect", "ignore_err",  # Ignore errors
-                    "-i", str(video),
-                    "-c", "copy",  # Copy all streams
-                    "-y",
-                    str(temp_file)
-                ]
-                
-                result = self._run_command(cmd)
+                if selected_backend == "mkvtoolnix":
+                    cmd = [self.mkvmerge_bin, "-o", str(temp_file), str(video)]
+                    result = self._run_command(cmd, description="mkvmerge metadata repair", max_feedback_lines=30)
+                elif selected_backend == "makemkv":
+                    ok, reason = self._run_makemkv_repair(video, temp_file)
+                    result = subprocess.CompletedProcess(
+                        args=[self.makemkvcon_bin],
+                        returncode=0 if ok else 1,
+                        stdout="",
+                        stderr=reason if not ok else "",
+                    )
+                else:
+                    cmd = [
+                        self.ffmpeg_bin,
+                        *self._hw_accel_flags(),
+                        "-loglevel",
+                        self.ffmpeg_loglevel,
+                        "-nostats",
+                        "-fflags", "+genpts",  # Generate presentation timestamps
+                        "-err_detect", "ignore_err",  # Ignore errors
+                        "-i", str(video),
+                        "-map", "0",
+                        "-c", "copy",  # Copy all streams
+                        "-y",
+                        str(temp_file)
+                    ]
+                    result = self._run_command(cmd, description="ffmpeg metadata repair")
                 
                 # Check if output file was created and has reasonable size
                 if temp_file.exists() and temp_file.stat().st_size > 1000:
+                    is_valid, invalid_reason = self._validate_muxed_output(video, temp_file)
+                    if not is_valid:
+                        summary.failed += 1
+                        summary.details.append({
+                            "file": str(video),
+                            "status": "failed",
+                            "reason": f"repair validation failed: {invalid_reason}",
+                        })
+                        try:
+                            os.remove(str(temp_file))
+                        except OSError:
+                            pass
+                        continue
+
                     # Replace original with repaired version
                     os.remove(str(video))
                     os.rename(str(temp_file), str(video))
@@ -1728,7 +2112,7 @@ class SubtitleProcessor:
                     summary.details.append({
                         "file": str(video),
                         "status": "repaired",
-                        "reason": "container rebuilt successfully"
+                        "reason": f"container rebuilt successfully with {selected_backend}"
                     })
                     self._log(f"  Successfully repaired {video.name}")
                 else:
@@ -1755,6 +2139,426 @@ class SubtitleProcessor:
                 })
         
         return summary
+
+    @staticmethod
+    def _safe_float(value: object, default: float = 0.0) -> float:
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return default
+
+    @staticmethod
+    def _extract_transcript_text(segments: List[Dict[str, object]]) -> str:
+        pieces: List[str] = []
+        for seg in segments:
+            txt = str(seg.get("text") or "").strip()
+            if txt:
+                pieces.append(txt)
+        return " ".join(pieces).strip()
+
+    def _text_to_timestamp_segments(self, text: str, total_duration: Optional[float]) -> List[Dict[str, object]]:
+        cleaned = re.sub(r"\s+", " ", (text or "").strip())
+        if not cleaned:
+            return []
+
+        chunks = [p.strip() for p in re.split(r"(?<=[.!?])\s+", cleaned) if p.strip()]
+        if not chunks:
+            words = cleaned.split()
+            step = 10
+            chunks = [" ".join(words[i : i + step]) for i in range(0, len(words), step)]
+
+        if not chunks:
+            return []
+
+        duration = total_duration if total_duration and total_duration > 0 else max(30.0, len(cleaned.split()) * 0.55)
+        weights = [max(1, len(chunk.split())) for chunk in chunks]
+        total_weight = sum(weights)
+
+        segments: List[Dict[str, object]] = []
+        cursor = 0.0
+        for idx, chunk in enumerate(chunks):
+            span = duration * (weights[idx] / total_weight)
+            start = cursor
+            end = min(duration, cursor + span)
+            if end <= start:
+                end = start + 0.75
+            segments.append({"start": start, "end": end, "text": chunk})
+            cursor = end
+        return segments
+
+    def _normalize_backend_segments(self, segments: List[Dict[str, object]]) -> List[Dict[str, object]]:
+        normalized: List[Dict[str, object]] = []
+        for seg in segments:
+            start = self._safe_float(seg.get("start"), 0.0)
+            end = self._safe_float(seg.get("end"), start + 0.75)
+            text = str(seg.get("text") or "").strip()
+            if not text:
+                continue
+            if end <= start:
+                end = start + 0.75
+            normalized.append({"start": start, "end": end, "text": text})
+        return normalized
+
+    def _detect_installed_transcription_backends(self) -> set[str]:
+        installed: set[str] = {"text-to-timestamps"}
+
+        if whisper is not None:
+            installed.add("openai-whisper")
+        if importlib.util.find_spec("faster_whisper") is not None:
+            installed.add("faster-whisper")
+        if importlib.util.find_spec("whisperx") is not None:
+            installed.add("whisperx")
+        if importlib.util.find_spec("stable_whisper") is not None:
+            installed.add("stable-ts")
+        if importlib.util.find_spec("whisper_timestamped") is not None:
+            installed.add("whisper-timestamped")
+        if importlib.util.find_spec("speechbrain") is not None:
+            installed.add("speechbrain")
+        if importlib.util.find_spec("vosk") is not None:
+            installed.add("vosk")
+        return installed
+
+    def _resolve_transcription_backend(self, requested_backend: str) -> Tuple[Optional[str], str]:
+        backend = (requested_backend or "auto").strip().lower()
+        if backend not in TRANSCRIBE_BACKENDS:
+            backend = "auto"
+
+        installed = self._detect_installed_transcription_backends()
+        preference = [
+            "openai-whisper",
+            "faster-whisper",
+            "whisperx",
+            "stable-ts",
+            "whisper-timestamped",
+            "vosk",
+            "speechbrain",
+            "text-to-timestamps",
+        ]
+
+        if backend == "auto":
+            for candidate in preference:
+                if candidate in installed:
+                    return candidate, f"auto-selected {candidate}"
+            return None, "no supported transcription backend is installed"
+
+        if backend == "text-to-timestamps":
+            return "text-to-timestamps", "using heuristic text-to-timestamps"
+
+        if backend not in installed:
+            return None, f"requested backend '{backend}' is not installed"
+        return backend, f"using {backend}"
+
+    def _transcribe_with_openai_whisper(
+        self,
+        video: Path,
+        model_size: str,
+        language: Optional[str],
+        model_cache: Dict[str, object],
+    ) -> Tuple[List[Dict[str, object]], str]:
+        if whisper is None:
+            raise RuntimeError("openai-whisper is not installed")
+
+        model_key = f"openai:{model_size}"
+        model = model_cache.get(model_key)
+        if model is None:
+            self._log(f"Loading openai-whisper model: {model_size}...")
+            model = whisper.load_model(model_size)
+            model_cache[model_key] = model
+
+        options: Dict[str, object] = {"task": "transcribe"}
+        if language:
+            options["language"] = language
+        result = model.transcribe(str(video), **options)
+        segments = self._normalize_backend_segments(result.get("segments", []))
+        detected = str(result.get("language") or "").strip().lower()
+        return segments, detected
+
+    def _transcribe_with_faster_whisper(
+        self,
+        video: Path,
+        model_size: str,
+        language: Optional[str],
+        model_cache: Dict[str, object],
+    ) -> Tuple[List[Dict[str, object]], str]:
+        module = importlib.import_module("faster_whisper")
+        model_key = f"faster:{model_size}"
+        model = model_cache.get(model_key)
+        if model is None:
+            self._log(f"Loading faster-whisper model: {model_size}...")
+            model = module.WhisperModel(model_size, device="auto", compute_type="int8")
+            model_cache[model_key] = model
+
+        segments_iter, info = model.transcribe(
+            str(video),
+            language=language or None,
+            task="transcribe",
+        )
+        rows: List[Dict[str, object]] = []
+        for seg in segments_iter:
+            rows.append({"start": float(seg.start), "end": float(seg.end), "text": str(seg.text).strip()})
+        detected = str(getattr(info, "language", "") or "").strip().lower()
+        return self._normalize_backend_segments(rows), detected
+
+    def _transcribe_with_whisperx(
+        self,
+        video: Path,
+        model_size: str,
+        language: Optional[str],
+        model_cache: Dict[str, object],
+    ) -> Tuple[List[Dict[str, object]], str]:
+        module = importlib.import_module("whisperx")
+        model_key = f"whisperx:{model_size}"
+        model = model_cache.get(model_key)
+        if model is None:
+            self._log(f"Loading WhisperX model: {model_size}...")
+            model = module.load_model(model_size, device="cpu", compute_type="int8")
+            model_cache[model_key] = model
+
+        audio = module.load_audio(str(video))
+        result = model.transcribe(audio, batch_size=8, language=language or None)
+        segments = result.get("segments", [])
+        detected = str(result.get("language") or "").strip().lower()
+
+        try:
+            if detected:
+                align_model, metadata = module.load_align_model(language_code=detected, device="cpu")
+                aligned = module.align(segments, align_model, metadata, audio, "cpu")
+                if isinstance(aligned, dict) and isinstance(aligned.get("segments"), list):
+                    segments = aligned.get("segments", segments)
+        except Exception as exc:
+            self._log(f"WhisperX alignment skipped: {exc}")
+
+        return self._normalize_backend_segments(segments), detected
+
+    def _transcribe_with_stable_ts(
+        self,
+        video: Path,
+        model_size: str,
+        language: Optional[str],
+        model_cache: Dict[str, object],
+    ) -> Tuple[List[Dict[str, object]], str]:
+        module = importlib.import_module("stable_whisper")
+        model_key = f"stable:{model_size}"
+        model = model_cache.get(model_key)
+        if model is None:
+            self._log(f"Loading stable-ts model: {model_size}...")
+            model = module.load_model(model_size)
+            model_cache[model_key] = model
+
+        result = model.transcribe(str(video), task="transcribe", language=language or None)
+        rows: List[Dict[str, object]] = []
+        for seg in getattr(result, "segments", []) or []:
+            rows.append(
+                {
+                    "start": float(getattr(seg, "start", 0.0)),
+                    "end": float(getattr(seg, "end", 0.0)),
+                    "text": str(getattr(seg, "text", "")).strip(),
+                }
+            )
+        detected = str(getattr(result, "language", "") or "").strip().lower()
+        return self._normalize_backend_segments(rows), detected
+
+    def _transcribe_with_whisper_timestamped(
+        self,
+        video: Path,
+        model_size: str,
+        language: Optional[str],
+        model_cache: Dict[str, object],
+    ) -> Tuple[List[Dict[str, object]], str]:
+        if whisper is None:
+            raise RuntimeError("openai-whisper is required for whisper-timestamped")
+        wt_module = importlib.import_module("whisper_timestamped")
+
+        model_key = f"wts:{model_size}"
+        model = model_cache.get(model_key)
+        if model is None:
+            self._log(f"Loading whisper-timestamped base model: {model_size}...")
+            model = whisper.load_model(model_size)
+            model_cache[model_key] = model
+
+        result = wt_module.transcribe(model, str(video), task="transcribe", language=language or None)
+        segments = self._normalize_backend_segments(result.get("segments", []))
+        detected = str(result.get("language") or "").strip().lower()
+        return segments, detected
+
+    def _transcribe_with_vosk(
+        self,
+        video: Path,
+        language: Optional[str],
+        model_cache: Dict[str, object],
+    ) -> Tuple[List[Dict[str, object]], str]:
+        vosk_module = importlib.import_module("vosk")
+        import wave
+
+        model_path = os.getenv("VOSK_MODEL_PATH", "").strip()
+        if not model_path:
+            raise RuntimeError("Set VOSK_MODEL_PATH to a local Vosk model directory")
+
+        model_key = f"vosk:{model_path}"
+        vosk_model = model_cache.get(model_key)
+        if vosk_model is None:
+            self._log(f"Loading Vosk model from: {model_path}")
+            vosk_model = vosk_module.Model(model_path)
+            model_cache[model_key] = vosk_model
+
+        with tempfile.TemporaryDirectory(prefix="vosk_audio_", dir=str(self._get_temp_workspace_root())) as temp_dir:
+            wav_path = Path(temp_dir) / "audio_16k.wav"
+            cmd = [
+                self.ffmpeg_bin,
+                "-y",
+                "-loglevel",
+                self.ffmpeg_loglevel,
+                "-nostats",
+                "-i",
+                str(video),
+                "-ac",
+                "1",
+                "-ar",
+                "16000",
+                str(wav_path),
+            ]
+            result = self._run_command(cmd, description="prepare wav for vosk")
+            if result.returncode != 0:
+                raise RuntimeError(result.stderr.strip() or "ffmpeg failed preparing Vosk WAV")
+
+            words: List[Dict[str, object]] = []
+            with wave.open(str(wav_path), "rb") as wf:
+                recognizer = vosk_module.KaldiRecognizer(vosk_model, wf.getframerate())
+                recognizer.SetWords(True)
+                while True:
+                    data = wf.readframes(4000)
+                    if not data:
+                        break
+                    if recognizer.AcceptWaveform(data):
+                        payload = json.loads(recognizer.Result() or "{}")
+                        words.extend(payload.get("result", []))
+
+                payload = json.loads(recognizer.FinalResult() or "{}")
+                words.extend(payload.get("result", []))
+
+        if not words:
+            raise RuntimeError("Vosk produced no timed words")
+
+        segments: List[Dict[str, object]] = []
+        chunk: List[Dict[str, object]] = []
+        for word in words:
+            chunk.append(word)
+            if len(chunk) >= 10:
+                start = self._safe_float(chunk[0].get("start"), 0.0)
+                end = self._safe_float(chunk[-1].get("end"), start + 0.8)
+                text = " ".join(str(w.get("word") or "").strip() for w in chunk).strip()
+                if text:
+                    segments.append({"start": start, "end": end, "text": text})
+                chunk = []
+        if chunk:
+            start = self._safe_float(chunk[0].get("start"), 0.0)
+            end = self._safe_float(chunk[-1].get("end"), start + 0.8)
+            text = " ".join(str(w.get("word") or "").strip() for w in chunk).strip()
+            if text:
+                segments.append({"start": start, "end": end, "text": text})
+
+        detected = (language or "").strip().lower()
+        return self._normalize_backend_segments(segments), detected
+
+    def _transcribe_with_speechbrain_text(self, video: Path, model_cache: Dict[str, object]) -> str:
+        savedir = str(self._get_temp_workspace_root() / "speechbrain_asr")
+        load_errors: List[str] = []
+
+        # SpeechBrain is more reliable with explicit PCM WAV input than direct MP4/MKV input.
+        # Some runtime environments lack torchaudio/ffmpeg backend wiring for container decode.
+        with tempfile.TemporaryDirectory(prefix="speechbrain_audio_", dir=str(self._get_temp_workspace_root())) as temp_dir:
+            wav_path = Path(temp_dir) / "speechbrain_16k.wav"
+            if not self._extract_audio_sample(
+                video_path=video,
+                stream_index=0,
+                output_path=wav_path,
+                start_seconds=None,
+                sample_seconds=None,
+            ):
+                raise RuntimeError("SpeechBrain input audio extraction failed (ffmpeg could not produce 16k WAV)")
+
+            asr_variants = [
+                ("speechbrain.inference.ASR", "ASR", "speechbrain_asr"),
+                ("speechbrain.inference", "EncoderDecoderASR", "speechbrain_enc"),
+                ("speechbrain.pretrained", "EncoderDecoderASR", "speechbrain_pretrained_enc"),
+            ]
+
+            for module_name, class_name, cache_key in asr_variants:
+                try:
+                    module = importlib.import_module(module_name)
+                    asr_cls = getattr(module, class_name, None)
+                    if asr_cls is None:
+                        load_errors.append(f"{module_name}.{class_name} unavailable")
+                        continue
+
+                    model = model_cache.get(cache_key)
+                    if model is None:
+                        model = asr_cls.from_hparams(
+                            source="speechbrain/asr-crdnn-rnnlm-librispeech",
+                            savedir=savedir,
+                        )
+                        model_cache[cache_key] = model
+
+                    text = str(model.transcribe_file(str(wav_path))).strip()
+                    if text:
+                        return text
+                    load_errors.append(f"{module_name}.{class_name} returned empty transcript")
+                except Exception as exc:
+                    load_errors.append(f"{module_name}.{class_name}: {type(exc).__name__}: {exc}")
+
+        if load_errors:
+            raise RuntimeError("SpeechBrain ASR failed: " + " | ".join(load_errors[-3:]))
+        raise RuntimeError("SpeechBrain ASR model could not be loaded")
+
+    def _transcribe_with_backend(
+        self,
+        video: Path,
+        backend: str,
+        model_size: str,
+        language: Optional[str],
+        model_cache: Dict[str, object],
+    ) -> Tuple[List[Dict[str, object]], str]:
+        if backend == "openai-whisper":
+            return self._transcribe_with_openai_whisper(video, model_size, language, model_cache)
+        if backend == "faster-whisper":
+            return self._transcribe_with_faster_whisper(video, model_size, language, model_cache)
+        if backend == "whisperx":
+            return self._transcribe_with_whisperx(video, model_size, language, model_cache)
+        if backend == "stable-ts":
+            return self._transcribe_with_stable_ts(video, model_size, language, model_cache)
+        if backend == "whisper-timestamped":
+            return self._transcribe_with_whisper_timestamped(video, model_size, language, model_cache)
+        if backend == "vosk":
+            return self._transcribe_with_vosk(video, language, model_cache)
+        if backend == "speechbrain":
+            transcript = self._transcribe_with_speechbrain_text(video, model_cache)
+            duration = self._probe_media_duration_seconds(video)
+            return self._text_to_timestamp_segments(transcript, duration), (language or "eng")
+        if backend == "text-to-timestamps":
+            transcript = ""
+            for candidate in ["speechbrain", "openai-whisper", "faster-whisper", "vosk"]:
+                try:
+                    if candidate == "speechbrain":
+                        transcript = self._transcribe_with_speechbrain_text(video, model_cache)
+                    else:
+                        candidate_segments, _ = self._transcribe_with_backend(
+                            video,
+                            candidate,
+                            model_size,
+                            language,
+                            model_cache,
+                        )
+                        transcript = self._extract_transcript_text(candidate_segments)
+                    if transcript:
+                        break
+                except Exception:
+                    continue
+            if not transcript:
+                raise RuntimeError("No transcript source was available for text-to-timestamps")
+            duration = self._probe_media_duration_seconds(video)
+            return self._text_to_timestamp_segments(transcript, duration), (language or "")
+
+        raise RuntimeError(f"Unsupported transcription backend: {backend}")
     
     def generate_subtitles(
         self,
@@ -1764,22 +2568,13 @@ class SubtitleProcessor:
         model_size: str = "base",
         output_format: str = "srt",
         language: Optional[str] = None,
+        backend: str = "auto",
     ) -> OperationSummary:
-        """Generate subtitles from video audio using Whisper AI."""
+        """Generate subtitles from video audio using selectable AI backends."""
         summary = OperationSummary(action="generate_subtitles")
-        
-        if whisper is None:
-            self._log("ERROR: openai-whisper not installed. Run: pip install openai-whisper")
-            summary.failed = 1
-            summary.details.append({
-                "file": "N/A",
-                "status": "failed",
-                "reason": "Whisper library not installed"
-            })
-            return summary
-        
+
         if pysubs2 is None:
-            self._log("ERROR: pysubs2 not installed. Run: pip install pysubs2")
+            self._log("ERROR: pysubs2 (aka pysub2) not installed. Run: pip install pysubs2")
             summary.failed = 1
             summary.details.append({
                 "file": "N/A",
@@ -1787,6 +2582,21 @@ class SubtitleProcessor:
                 "reason": "pysubs2 library not installed"
             })
             return summary
+
+        selected_backend, backend_reason = self._resolve_transcription_backend(backend)
+        if not selected_backend:
+            summary.failed = 1
+            summary.details.append(
+                {
+                    "file": "N/A",
+                    "status": "failed",
+                    "reason": backend_reason,
+                }
+            )
+            self._log(f"ERROR: {backend_reason}")
+            return summary
+
+        self._log(f"Subtitle generation backend: {selected_backend} ({backend_reason})")
         
         videos = [Path(f) for f in target_files if Path(f).exists()]
         for video in self._iter_video_files(folders, recursive):
@@ -1798,22 +2608,8 @@ class SubtitleProcessor:
         if not videos:
             self._log("No video files found to generate subtitles")
             return summary
-        
-        # Load Whisper model
-        try:
-            self._log(f"Loading Whisper model: {model_size}...")
-            model = whisper.load_model(model_size)
-            self._log(f"Model loaded successfully")
-        except Exception as e:
-            self._log(f"ERROR loading Whisper model: {e}")
-            summary.failed = len(videos)
-            for video in videos:
-                summary.details.append({
-                    "file": str(video),
-                    "status": "failed",
-                    "reason": f"Failed to load model: {e}"
-                })
-            return summary
+
+        model_cache: Dict[str, object] = {}
         
         for video in videos:
             self._log(f"Generating subtitles for {video.name}...")
@@ -1831,17 +2627,20 @@ class SubtitleProcessor:
                 continue
             
             try:
-                # Transcribe video
-                self._log(f"  Transcribing audio (this may take a while)...")
-                transcribe_options = {"task": "transcribe"}
-                if language:
-                    transcribe_options["language"] = language
-                
-                result = model.transcribe(str(video), **transcribe_options)
+                self._log(f"  Transcribing audio with {selected_backend}...")
+                segments, detected_lang = self._transcribe_with_backend(
+                    video=video,
+                    backend=selected_backend,
+                    model_size=model_size,
+                    language=language,
+                    model_cache=model_cache,
+                )
+                if not segments:
+                    raise RuntimeError("transcription backend returned no segments")
                 
                 # Create subtitle file using pysubs2
                 subs = pysubs2.SSAFile()
-                for segment in result["segments"]:
+                for segment in segments:
                     event = pysubs2.SSAEvent(
                         start=int(segment["start"] * 1000),  # Convert to milliseconds
                         end=int(segment["end"] * 1000),
@@ -1851,8 +2650,8 @@ class SubtitleProcessor:
                 
                 # Save subtitle file
                 subs.save(str(output_path))
-                
-                detected_lang = result.get("language", "unknown")
+
+                detected_lang = detected_lang or "unknown"
                 self._log(f"  Generated {output_path.name} (language: {detected_lang})")
                 self._log(f"  Saved subtitle to: {output_path}")
                 
@@ -1860,8 +2659,12 @@ class SubtitleProcessor:
                 summary.details.append({
                     "file": str(video),
                     "status": "generated",
-                    "reason": f"created {output_path.name} with {len(result['segments'])} segments",
-                    "output_path": str(output_path)
+                    "reason": (
+                        f"created {output_path.name} with {len(segments)} segments "
+                        f"using {selected_backend}"
+                    ),
+                    "output_path": str(output_path),
+                    "backend": selected_backend,
                 })
             
             except Exception as e:
@@ -2511,6 +3314,204 @@ class SubtitleProcessor:
 
         return matched / len(speech), matched, len(speech)
 
+    def _resolve_sync_backend(self, requested_backend: str) -> Tuple[Optional[str], str]:
+        backend = (requested_backend or "auto").strip().lower()
+        if backend not in SYNC_BACKENDS:
+            backend = "auto"
+
+        if backend == "auto":
+            if whisper is not None:
+                return "whisper-offset", "auto-selected whisper-offset"
+            if importlib.util.find_spec("aeneas") is not None:
+                return "aeneas", "auto-selected aeneas"
+            return None, "neither openai-whisper nor aeneas is installed"
+
+        if backend == "whisper-offset" and whisper is None:
+            return None, "whisper-offset selected but openai-whisper is not installed"
+        if backend == "aeneas" and importlib.util.find_spec("aeneas") is None:
+            return None, "aeneas backend selected but aeneas is not installed"
+        return backend, f"using {backend}"
+
+    def _sync_subtitles_with_aeneas(
+        self,
+        folders: List[str],
+        recursive: bool,
+        target_files: List[str],
+        language: Optional[str],
+        overwrite: bool,
+        output_suffix: str,
+        output_root: Optional[str],
+    ) -> OperationSummary:
+        summary = OperationSummary(action="sync_subtitles")
+
+        videos = [Path(f) for f in target_files if Path(f).exists()]
+        for video in self._iter_video_files(folders, recursive):
+            videos.append(video)
+        videos = list({str(v): v for v in videos}.values())
+        summary.scanned = len(videos)
+
+        if not videos:
+            self._log("No video files found to sync subtitles")
+            return summary
+
+        task_module = importlib.import_module("aeneas.task")
+        exec_module = importlib.import_module("aeneas.executetask")
+        Task = getattr(task_module, "Task")
+        ExecuteTask = getattr(exec_module, "ExecuteTask")
+
+        lang_code = self._normalize_language_code(language or "eng") or "eng"
+        if len(lang_code) != 3:
+            lang_code = "eng"
+
+        for video in videos:
+            self._log(f"Syncing subtitles with Aeneas: {video.name}")
+            sidecars = [
+                p for p in self._find_sidecar_subtitles(video)
+                if p.suffix.lower() in {".srt", ".ass", ".ssa", ".vtt", ".sub", ".ttml"}
+            ]
+            if not sidecars:
+                summary.skipped += 1
+                summary.details.append(
+                    {
+                        "file": str(video),
+                        "status": "skipped",
+                        "reason": "no text subtitle sidecar found",
+                    }
+                )
+                continue
+
+            subtitle_path = sidecars[0]
+            try:
+                subs = pysubs2.load(str(subtitle_path))
+            except Exception as exc:
+                summary.failed += 1
+                summary.details.append({"file": str(video), "status": "failed", "reason": f"Could not load subtitle: {exc}"})
+                continue
+
+            non_empty_indices: List[int] = []
+            text_lines: List[str] = []
+            for idx, ev in enumerate(subs.events):
+                cleaned = self._strip_subtitle_tags(str(getattr(ev, "text", "") or "")).strip()
+                if cleaned:
+                    non_empty_indices.append(idx)
+                    text_lines.append(cleaned)
+
+            if not text_lines:
+                summary.skipped += 1
+                summary.details.append({"file": str(video), "status": "skipped", "reason": "subtitle file has no text events"})
+                continue
+
+            with tempfile.TemporaryDirectory(prefix="aeneas_sync_", dir=str(self._get_temp_workspace_root())) as temp_dir:
+                text_file = Path(temp_dir) / "subtitle_text.txt"
+                map_file = Path(temp_dir) / "sync_map.json"
+                text_file.write_text("\n".join(text_lines), encoding="utf-8")
+
+                task_config = (
+                    f"task_language={lang_code}|"
+                    "is_text_type=plain|"
+                    "os_task_file_format=json"
+                )
+
+                try:
+                    task = Task(config_string=task_config)
+                    task.audio_file_path_absolute = str(video.resolve())
+                    task.text_file_path_absolute = str(text_file.resolve())
+                    task.sync_map_file_path_absolute = str(map_file.resolve())
+                    ExecuteTask(task).execute()
+                    task.output_sync_map_file()
+                except Exception as exc:
+                    summary.failed += 1
+                    summary.details.append(
+                        {
+                            "file": str(video),
+                            "status": "failed",
+                            "reason": f"Aeneas alignment failed: {exc}",
+                        }
+                    )
+                    continue
+
+                try:
+                    payload = json.loads(map_file.read_text(encoding="utf-8"))
+                    fragments = payload.get("fragments", [])
+                except Exception as exc:
+                    summary.failed += 1
+                    summary.details.append(
+                        {
+                            "file": str(video),
+                            "status": "failed",
+                            "reason": f"Could not parse Aeneas output: {exc}",
+                        }
+                    )
+                    continue
+
+                if not isinstance(fragments, list) or not fragments:
+                    summary.failed += 1
+                    summary.details.append(
+                        {
+                            "file": str(video),
+                            "status": "failed",
+                            "reason": "Aeneas returned no alignment fragments",
+                        }
+                    )
+                    continue
+
+                shifted_subs = pysubs2.SSAFile()
+                shifted_subs.info.update(subs.info)
+                shifted_subs.styles.update(subs.styles)
+                shifted_subs.events = [ev.copy() for ev in subs.events]
+
+                mapped = 0
+                for idx, fragment in enumerate(fragments):
+                    if idx >= len(non_empty_indices):
+                        break
+                    ev_index = non_empty_indices[idx]
+                    begin = self._safe_float(fragment.get("begin"), 0.0)
+                    end = self._safe_float(fragment.get("end"), begin + 0.75)
+                    if end <= begin:
+                        end = begin + 0.75
+                    shifted_subs.events[ev_index].start = max(0, int(begin * 1000))
+                    shifted_subs.events[ev_index].end = max(
+                        shifted_subs.events[ev_index].start + 100,
+                        int(end * 1000),
+                    )
+                    mapped += 1
+
+            if overwrite:
+                out_path = subtitle_path
+            else:
+                output_parent = subtitle_path.parent
+                if output_root:
+                    output_parent = Path(output_root).expanduser().resolve()
+                    output_parent.mkdir(parents=True, exist_ok=True)
+                out_path = output_parent / f"{subtitle_path.stem}{output_suffix}{subtitle_path.suffix}"
+                idx = 1
+                while out_path.exists():
+                    out_path = output_parent / f"{subtitle_path.stem}{output_suffix}_{idx}{subtitle_path.suffix}"
+                    idx += 1
+
+            try:
+                shifted_subs.save(str(out_path))
+            except Exception as exc:
+                summary.failed += 1
+                summary.details.append({"file": str(video), "status": "failed", "reason": f"Could not save synced subtitle: {exc}"})
+                continue
+
+            mapped_ratio = mapped / max(1, len(non_empty_indices))
+            quality = "good" if mapped_ratio >= 0.85 else ("fair" if mapped_ratio >= 0.5 else "low")
+            summary.processed += 1
+            summary.details.append(
+                {
+                    "file": str(video),
+                    "status": "synced",
+                    "reason": f"aeneas mapped {mapped}/{len(non_empty_indices)} events ({int(mapped_ratio * 100)}%) quality={quality}",
+                    "output_path": str(out_path),
+                    "quality": quality,
+                    "backend": "aeneas",
+                }
+            )
+
+        return summary
+
     def sync_subtitles(
         self,
         folders: List[str],
@@ -2523,14 +3524,35 @@ class SubtitleProcessor:
         max_offset_seconds: float = 300.0,
         verification_tolerance_seconds: float = 2.0,
         output_root: Optional[str] = None,
+        sync_backend: str = "auto",
     ) -> OperationSummary:
-        """Re-sync existing subtitle files to match actual audio timing using Whisper AI.
+        """Re-sync existing subtitle files to match audio timing using selectable sync backends.
 
         This shifts existing subtitle timestamps — it does NOT generate new subtitles.
         After syncing each file it verifies subtitle coverage against Whisper speech segments
         and reports a quality rating.
         """
         summary = OperationSummary(action="sync_subtitles")
+
+        selected_sync_backend, sync_reason = self._resolve_sync_backend(sync_backend)
+        if not selected_sync_backend:
+            summary.failed = 1
+            summary.details.append({"file": "N/A", "status": "failed", "reason": sync_reason})
+            self._log(f"ERROR: {sync_reason}")
+            return summary
+
+        self._log(f"Subtitle sync backend: {selected_sync_backend} ({sync_reason})")
+
+        if selected_sync_backend == "aeneas":
+            return self._sync_subtitles_with_aeneas(
+                folders=folders,
+                recursive=recursive,
+                target_files=target_files,
+                language=language,
+                overwrite=overwrite,
+                output_suffix=output_suffix,
+                output_root=output_root,
+            )
 
         if whisper is None:
             self._log("ERROR: openai-whisper not installed. Run: pip install openai-whisper")
@@ -2697,6 +3719,7 @@ class JobPayload(BaseModel):
     extract_for_restore: bool = True
     export_txt: bool = True
     scan_only_embedded: bool = False
+    ai_backend: str = "auto"
     model_size: str = "base"
     language_strategy: str = "snippets"
     snippet_count: int = 3
@@ -2705,6 +3728,7 @@ class JobPayload(BaseModel):
     detect_only_audio_tagging: bool = False
     keep_audio_orders_by_file: Dict[str, List[int]] = Field(default_factory=dict)
     prune_audio_suffix: str = "_audiopruned"
+    sync_backend: str = "auto"
     sync_language: str = ""
     sync_max_offset_seconds: float = 300.0
     sync_verification_tolerance: float = 2.0
@@ -2855,6 +3879,7 @@ class JobManager:
                     max_offset_seconds=max(10.0, float(payload.sync_max_offset_seconds or 300.0)),
                     verification_tolerance_seconds=max(0.5, float(payload.sync_verification_tolerance or 2.0)),
                     output_root=payload.output_root or None,
+                    sync_backend=payload.sync_backend or "auto",
                 )
                 result = summary.to_dict()
             else:
@@ -3295,12 +4320,12 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 },
                 {
                     "title": "Swiss Army Knife Tools",
-                    "description": "Additional video tools for format conversion, organization, and repair. All tools work with your selected folders and files.",
+                    "description": "Additional video tools for conversion, organization, and repair. Use the Tooling & Diagnostics tab to configure FFmpeg/FFprobe, MKVToolNix, HandBrakeCLI, and MakeMKV paths.",
                     "widget": None,
                 },
                 {
                     "title": "Convert to MKV/MP4",
-                    "description": "Convert videos between MKV and MP4 formats while preserving all streams (video, audio, subtitles). Great for device compatibility.",
+                    "description": "Convert videos between MKV and MP4 using selectable backends: FFmpeg, MKVToolNix, or HandBrakeCLI. Auto mode picks the best available backend.",
                     "widget": self.main_window.convert_mkv_button,
                 },
                 {
@@ -3310,12 +4335,12 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 },
                 {
                     "title": "Repair Metadata",
-                    "description": "Rebuild corrupted video containers using FFmpeg. Useful for fixing playback issues with torrented files. Creates backups by default.",
+                    "description": "Rebuild corrupted containers with backend selection (FFmpeg, MKVToolNix, or MakeMKV for MKV files). Useful for fixing truncated/corrupt media issues.",
                     "widget": self.main_window.repair_button,
                 },
                 {
-                    "title": "Generate Subtitles with Whisper AI",
-                    "description": "Use Whisper AI to automatically generate subtitles from video audio. Choose from 7 model sizes (tiny to large-v3) for speed vs accuracy trade-off. Runs 100% locally - no internet or API keys needed! Note: Requires ~10GB disk space for full installation.",
+                    "title": "Generate Subtitles with AI Backends",
+                    "description": "Generate subtitles using selectable backends: OpenAI Whisper, faster-whisper, WhisperX, stable-ts, whisper-timestamped, SpeechBrain, Vosk, or Text-to-Timestamps. Auto mode picks the best available backend.",
                     "widget": self.main_window.generate_button if self.main_window.use_ai else None,
                 },
                 {
@@ -3523,8 +4548,16 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
         def run(self) -> None:
             try:
                 processor = SubtitleProcessor(
+                    ffmpeg_bin=str(self.options.get("ffmpeg_bin", "")).strip() or None,
+                    ffprobe_bin=str(self.options.get("ffprobe_bin", "")).strip() or None,
+                    mkvmerge_bin=str(self.options.get("mkvmerge_bin", "")).strip() or None,
+                    handbrake_bin=str(self.options.get("handbrake_bin", "")).strip() or None,
+                    makemkvcon_bin=str(self.options.get("makemkvcon_bin", "")).strip() or None,
                     log_callback=self.log_message.emit,
                     use_hw_accel=bool(self.options.get("use_hw_accel", False)),
+                    command_feedback=str(self.options.get("command_feedback", "normal")),
+                    ffmpeg_loglevel=str(self.options.get("ffmpeg_loglevel", "warning")),
+                    ffprobe_loglevel=str(self.options.get("ffprobe_loglevel", "error")),
                 )
                 folders = self.options["folders"]
                 target_files = self.options.get("target_files", [])
@@ -3592,6 +4625,7 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                         overwrite=overwrite,
                         output_suffix=str(self.options.get("output_suffix", "_converted")),
                         output_root=str(self.options.get("output_root", "")).strip() or None,
+                        backend=str(self.options.get("convert_backend", "auto")),
                     )
                     payload = summary.to_dict()
                 elif self.action == "organize":
@@ -3610,6 +4644,7 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                         recursive=recursive,
                         target_files=target_files,
                         create_backup=bool(self.options.get("create_backup", True)),
+                        backend=str(self.options.get("repair_backend", "auto")),
                     )
                     payload = summary.to_dict()
                 elif self.action == "generate":
@@ -3620,6 +4655,7 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                         model_size=str(self.options.get("model_size", "base")),
                         output_format=str(self.options.get("output_format", "srt")),
                         language=self.options.get("language"),
+                        backend=str(self.options.get("ai_backend", "auto")),
                     )
                     payload = summary.to_dict()
                 elif self.action == "tag_audio_language":
@@ -3661,6 +4697,7 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                         max_offset_seconds=max(10.0, float(self.options.get("sync_max_offset_seconds", 300.0))),
                         verification_tolerance_seconds=max(0.5, float(self.options.get("sync_verification_tolerance", 2.0))),
                         output_root=str(self.options.get("output_root", "")).strip() or None,
+                        sync_backend=str(self.options.get("sync_backend", "auto")),
                     )
                     payload = summary.to_dict()
                 else:
@@ -4089,7 +5126,17 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
 
             # Swiss Army Knife section
             tools_box = QGroupBox("Video Tools (Swiss Army Knife)")
-            tools_layout = QVBoxLayout(tools_box)
+            tools_root_layout = QVBoxLayout(tools_box)
+            self.tools_tabs = QTabWidget()
+            tools_root_layout.addWidget(self.tools_tabs)
+
+            operations_widget = QWidget()
+            tools_layout = QVBoxLayout(operations_widget)
+            self.tools_tabs.addTab(operations_widget, "Operations")
+
+            diagnostics_widget = QWidget()
+            diagnostics_layout = QGridLayout(diagnostics_widget)
+            self.tools_tabs.addTab(diagnostics_widget, "Tooling && Diagnostics")
             
             # Organize options
             organize_options = QHBoxLayout()
@@ -4118,6 +5165,25 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
             organize_config_row.addWidget(self.organize_rules_input)
             organize_config_row.addWidget(self.organize_rules_browse_button)
             tools_layout.addLayout(organize_config_row)
+
+            backend_row = QHBoxLayout()
+            backend_row.addWidget(QLabel("Convert backend:"))
+            self.convert_backend_combo = QComboBox()
+            self.convert_backend_combo.addItem("Auto (recommended)", "auto")
+            self.convert_backend_combo.addItem("FFmpeg", "ffmpeg")
+            self.convert_backend_combo.addItem("MKVToolNix (mkvmerge)", "mkvtoolnix")
+            self.convert_backend_combo.addItem("HandBrakeCLI", "handbrake")
+            backend_row.addWidget(self.convert_backend_combo)
+
+            backend_row.addWidget(QLabel("Repair backend:"))
+            self.repair_backend_combo = QComboBox()
+            self.repair_backend_combo.addItem("Auto (recommended)", "auto")
+            self.repair_backend_combo.addItem("FFmpeg", "ffmpeg")
+            self.repair_backend_combo.addItem("MKVToolNix (mkvmerge)", "mkvtoolnix")
+            self.repair_backend_combo.addItem("MakeMKV (makemkvcon)", "makemkv")
+            backend_row.addWidget(self.repair_backend_combo)
+            backend_row.addStretch()
+            tools_layout.addLayout(backend_row)
             
             # Tool buttons
             tools_button_row1 = QHBoxLayout()
@@ -4143,6 +5209,19 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 tools_layout.addWidget(subtitle_gen_label)
                 
                 whisper_options = QHBoxLayout()
+                whisper_options.addWidget(QLabel("Backend:"))
+                self.ai_backend_combo = QComboBox()
+                self.ai_backend_combo.addItem("Auto (best available)", "auto")
+                self.ai_backend_combo.addItem("OpenAI Whisper", "openai-whisper")
+                self.ai_backend_combo.addItem("faster-whisper", "faster-whisper")
+                self.ai_backend_combo.addItem("WhisperX", "whisperx")
+                self.ai_backend_combo.addItem("stable-ts", "stable-ts")
+                self.ai_backend_combo.addItem("whisper-timestamped", "whisper-timestamped")
+                self.ai_backend_combo.addItem("SpeechBrain", "speechbrain")
+                self.ai_backend_combo.addItem("Vosk", "vosk")
+                self.ai_backend_combo.addItem("Text to Timestamps (heuristic)", "text-to-timestamps")
+                whisper_options.addWidget(self.ai_backend_combo)
+
                 whisper_options.addWidget(QLabel("Model Size:"))
                 self.whisper_model_combo = QComboBox()
                 self.whisper_model_combo.addItems(["tiny", "base", "small", "medium", "large", "large-v2", "large-v3"])
@@ -4212,6 +5291,13 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 sync_options_row = QHBoxLayout()
                 sync_options_row.addWidget(QLabel("Subtitle Sync:"))
 
+                sync_options_row.addWidget(QLabel("Backend:"))
+                self.sync_backend_combo = QComboBox()
+                self.sync_backend_combo.addItem("Auto", "auto")
+                self.sync_backend_combo.addItem("Whisper Offset", "whisper-offset")
+                self.sync_backend_combo.addItem("Aeneas", "aeneas")
+                sync_options_row.addWidget(self.sync_backend_combo)
+
                 sync_options_row.addWidget(QLabel("Language hint:"))
                 self.sync_language_input = QLineEdit()
                 self.sync_language_input.setPlaceholderText("auto")
@@ -4226,9 +5312,8 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 self.sync_button = QPushButton("Sync Subtitles to Audio")
                 self.sync_button.setToolTip(
                     "Shift existing sidecar subtitle timings to match audio.\n"
-                    "Whisper transcribes the audio, then the best global offset is computed\n"
-                    "and applied to every subtitle event. No new subtitles are generated.\n"
-                    "A verification pass reports coverage quality when done."
+                    "Choose Whisper Offset or Aeneas backend in the sync row.\n"
+                    "No new subtitles are generated; existing subtitle events are re-timed."
                 )
                 sync_options_row.addWidget(self.sync_button)
                 sync_options_row.addStretch()
@@ -4236,6 +5321,7 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 self.sync_button.clicked.connect(self._start_sync_subtitles)
             else:
                 # Create dummy attributes for widgets that won't exist
+                self.ai_backend_combo = None
                 self.whisper_model_combo = None
                 self.whisper_language_input = None
                 self.generate_button = None
@@ -4245,6 +5331,7 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 self.audio_lang_overwrite_checkbox = None
                 self.audio_lang_detect_only_checkbox = None
                 self.tag_audio_language_button = None
+                self.sync_backend_combo = None
                 self.sync_language_input = None
                 self.sync_overwrite_checkbox = None
                 self.sync_button = None
@@ -4259,6 +5346,74 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                     )
                     ai_unavailable.setStyleSheet("color: #d9822b;")
                     tools_layout.addWidget(ai_unavailable)
+
+            # Tooling & diagnostics tab
+            self.ffmpeg_bin_input = QLineEdit()
+            self.ffmpeg_bin_input.setPlaceholderText("ffmpeg")
+            self.ffmpeg_bin_input.setText("ffmpeg")
+            self.ffprobe_bin_input = QLineEdit()
+            self.ffprobe_bin_input.setPlaceholderText("ffprobe")
+            self.ffprobe_bin_input.setText("ffprobe")
+            self.mkvmerge_bin_input = QLineEdit()
+            self.mkvmerge_bin_input.setPlaceholderText("mkvmerge")
+            self.mkvmerge_bin_input.setText("mkvmerge")
+            self.handbrake_bin_input = QLineEdit()
+            self.handbrake_bin_input.setPlaceholderText("HandBrakeCLI")
+            self.handbrake_bin_input.setText("HandBrakeCLI")
+            self.makemkvcon_bin_input = QLineEdit()
+            self.makemkvcon_bin_input.setPlaceholderText("makemkvcon")
+            self.makemkvcon_bin_input.setText("makemkvcon")
+
+            def _tool_row(row: int, label: str, line_edit: QLineEdit) -> None:
+                diagnostics_layout.addWidget(QLabel(label), row, 0)
+                diagnostics_layout.addWidget(line_edit, row, 1)
+                browse_button = QPushButton("Browse...")
+                browse_button.clicked.connect(lambda _=False, target=line_edit: self._choose_executable_path(target))
+                diagnostics_layout.addWidget(browse_button, row, 2)
+
+            _tool_row(0, "FFmpeg binary:", self.ffmpeg_bin_input)
+            _tool_row(1, "FFprobe binary:", self.ffprobe_bin_input)
+            _tool_row(2, "MKVToolNix (mkvmerge):", self.mkvmerge_bin_input)
+            _tool_row(3, "HandBrakeCLI:", self.handbrake_bin_input)
+            _tool_row(4, "MakeMKV (makemkvcon):", self.makemkvcon_bin_input)
+
+            diagnostics_layout.addWidget(QLabel("Command feedback:"), 5, 0)
+            self.command_feedback_combo = QComboBox()
+            self.command_feedback_combo.addItem("Quiet", "quiet")
+            self.command_feedback_combo.addItem("Normal", "normal")
+            self.command_feedback_combo.addItem("Verbose", "verbose")
+            self.command_feedback_combo.setCurrentIndex(1)
+            diagnostics_layout.addWidget(self.command_feedback_combo, 5, 1, 1, 2)
+
+            diagnostics_layout.addWidget(QLabel("FFmpeg loglevel:"), 6, 0)
+            self.ffmpeg_loglevel_combo = QComboBox()
+            for level in ["quiet", "error", "warning", "info", "verbose"]:
+                self.ffmpeg_loglevel_combo.addItem(level, level)
+            ffmpeg_idx = self.ffmpeg_loglevel_combo.findData("warning")
+            if ffmpeg_idx >= 0:
+                self.ffmpeg_loglevel_combo.setCurrentIndex(ffmpeg_idx)
+            diagnostics_layout.addWidget(self.ffmpeg_loglevel_combo, 6, 1, 1, 2)
+
+            diagnostics_layout.addWidget(QLabel("FFprobe loglevel:"), 7, 0)
+            self.ffprobe_loglevel_combo = QComboBox()
+            for level in ["quiet", "error", "warning", "info", "verbose"]:
+                self.ffprobe_loglevel_combo.addItem(level, level)
+            ffprobe_idx = self.ffprobe_loglevel_combo.findData("error")
+            if ffprobe_idx >= 0:
+                self.ffprobe_loglevel_combo.setCurrentIndex(ffprobe_idx)
+            diagnostics_layout.addWidget(self.ffprobe_loglevel_combo, 7, 1, 1, 2)
+
+            self.tool_status_refresh_button = QPushButton("Refresh Tool Status")
+            self.tool_status_refresh_button.clicked.connect(
+                lambda: self._refresh_dependency_status(log_missing=False, announce=True)
+            )
+            diagnostics_layout.addWidget(self.tool_status_refresh_button, 8, 0, 1, 3)
+
+            self.tool_status_box = QTextEdit()
+            self.tool_status_box.setReadOnly(True)
+            self.tool_status_box.setMinimumHeight(140)
+            self.tool_status_box.setMaximumHeight(220)
+            diagnostics_layout.addWidget(self.tool_status_box, 9, 0, 1, 3)
 
             button_row = QHBoxLayout()
             self.scan_button = QPushButton("Scan Videos")
@@ -4312,27 +5467,7 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
             root.addWidget(QLabel("Activity Log"))
             root.addWidget(self.log_box)
 
-            dep_check = SubtitleProcessor().check_dependencies()
-            if not dep_check["ffmpeg_found"]:
-                self._log(
-                    "WARNING: ffmpeg not detected on PATH. "
-                    "Install ffmpeg before processing videos."
-                )
-                self._log_error(
-                    "ERR001_FFMPEG_MISSING",
-                    "ffmpeg binary not found on system PATH",
-                    f"Expected location: {dep_check.get('ffmpeg_path', 'Not found')}"
-                )
-            if not dep_check["ffprobe_found"]:
-                self._log(
-                    "WARNING: ffprobe not detected on PATH. "
-                    "Install ffmpeg before processing videos."
-                )
-                self._log_error(
-                    "ERR002_FFPROBE_MISSING",
-                    "ffprobe binary not found on system PATH",
-                    f"Expected location: {dep_check.get('ffprobe_path', 'Not found')}"
-                )
+            self._refresh_dependency_status(log_missing=True, announce=False)
 
             if self.ai_requested_but_unavailable:
                 missing = ", ".join(self.ai_missing_dependencies)
@@ -4387,12 +5522,77 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 "scan_only_embedded": self.scan_only_embedded_checkbox.isChecked(),
                 "use_hw_accel": self.hw_accel_checkbox.isChecked(),
                 "output_root": output_root,
+                "ffmpeg_bin": self.ffmpeg_bin_input.text().strip() or "ffmpeg",
+                "ffprobe_bin": self.ffprobe_bin_input.text().strip() or "ffprobe",
+                "mkvmerge_bin": self.mkvmerge_bin_input.text().strip() or "mkvmerge",
+                "handbrake_bin": self.handbrake_bin_input.text().strip() or "HandBrakeCLI",
+                "makemkvcon_bin": self.makemkvcon_bin_input.text().strip() or "makemkvcon",
+                "command_feedback": str(self.command_feedback_combo.currentData() or "normal"),
+                "ffmpeg_loglevel": str(self.ffmpeg_loglevel_combo.currentData() or "warning"),
+                "ffprobe_loglevel": str(self.ffprobe_loglevel_combo.currentData() or "error"),
+                "convert_backend": str(self.convert_backend_combo.currentData() or "auto"),
+                "repair_backend": str(self.repair_backend_combo.currentData() or "auto"),
             }
 
         def _choose_output_directory(self) -> None:
             folder = QFileDialog.getExistingDirectory(self, "Select Output Folder")
             if folder:
                 self.custom_output_dir_input.setText(folder)
+
+        def _choose_executable_path(self, target_input: QLineEdit) -> None:
+            file_path, _ = QFileDialog.getOpenFileName(self, "Select Executable")
+            if file_path:
+                target_input.setText(file_path)
+
+        def _refresh_dependency_status(self, log_missing: bool = False, announce: bool = True) -> Dict[str, object]:
+            ffmpeg_bin = self.ffmpeg_bin_input.text().strip() or "ffmpeg"
+            ffprobe_bin = self.ffprobe_bin_input.text().strip() or "ffprobe"
+            mkvmerge_bin = self.mkvmerge_bin_input.text().strip() or "mkvmerge"
+            handbrake_bin = self.handbrake_bin_input.text().strip() or "HandBrakeCLI"
+            makemkv_bin = self.makemkvcon_bin_input.text().strip() or "makemkvcon"
+
+            probe = SubtitleProcessor(
+                ffmpeg_bin=ffmpeg_bin,
+                ffprobe_bin=ffprobe_bin,
+                mkvmerge_bin=mkvmerge_bin,
+                handbrake_bin=handbrake_bin,
+                makemkvcon_bin=makemkv_bin,
+            )
+            dep_check = probe.check_dependencies()
+
+            lines = [
+                f"FFmpeg: {'FOUND' if dep_check.get('ffmpeg_found') else 'MISSING'}  ({dep_check.get('ffmpeg_path') or ffmpeg_bin})",
+                f"FFprobe: {'FOUND' if dep_check.get('ffprobe_found') else 'MISSING'}  ({dep_check.get('ffprobe_path') or ffprobe_bin})",
+                f"MKVToolNix (mkvmerge): {'FOUND' if dep_check.get('mkvmerge_found') else 'MISSING'}  ({dep_check.get('mkvmerge_path') or mkvmerge_bin})",
+                f"HandBrakeCLI: {'FOUND' if dep_check.get('handbrake_found') else 'MISSING'}  ({dep_check.get('handbrake_path') or handbrake_bin})",
+                f"MakeMKV (makemkvcon): {'FOUND' if dep_check.get('makemkv_found') else 'MISSING'}  ({dep_check.get('makemkv_path') or makemkv_bin})",
+            ]
+            self.tool_status_box.setPlainText("\n".join(lines))
+
+            if log_missing:
+                if not dep_check["ffmpeg_found"]:
+                    self._log(
+                        "WARNING: ffmpeg not detected on PATH. "
+                        "Install ffmpeg before processing videos."
+                    )
+                    self._log_error(
+                        "ERR001_FFMPEG_MISSING",
+                        "ffmpeg binary not found on system PATH",
+                        f"Expected location: {dep_check.get('ffmpeg_path', 'Not found')}"
+                    )
+                if not dep_check["ffprobe_found"]:
+                    self._log(
+                        "WARNING: ffprobe not detected on PATH. "
+                        "Install ffmpeg before processing videos."
+                    )
+                    self._log_error(
+                        "ERR002_FFPROBE_MISSING",
+                        "ffprobe binary not found on system PATH",
+                        f"Expected location: {dep_check.get('ffprobe_path', 'Not found')}"
+                    )
+            elif announce:
+                self._log("Tool status refreshed.")
+            return dep_check
 
         def _set_running(self, running: bool) -> None:
             self.scan_button.setEnabled(not running)
@@ -4403,6 +5603,7 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
             self.convert_mp4_button.setEnabled(not running)
             self.organize_button.setEnabled(not running)
             self.repair_button.setEnabled(not running)
+            self.tool_status_refresh_button.setEnabled(not running)
             if self.generate_button is not None:
                 self.generate_button.setEnabled(not running)
             if self.tag_audio_language_button is not None:
@@ -4559,11 +5760,13 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
             try:
                 options = self._collect_common_options()
                 options["create_backup"] = self.repair_backup_checkbox.isChecked()
+                selected_backend = str(self.repair_backend_combo.currentData() or "auto")
                 
                 reply = QMessageBox.question(
                     self,
                     "Confirm Repair",
-                    "This will rebuild video containers using FFmpeg. {} Continue?".format(
+                    "This will rebuild video containers using backend '{}'. {} Continue?".format(
+                        selected_backend,
                         "Backups will be created. " if options["create_backup"] else "NO BACKUPS will be created! "
                     ),
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
@@ -4581,30 +5784,34 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 QMessageBox.warning(self, "Validation", str(exc))
         
         def _start_generate(self) -> None:
-            """Start subtitle generation using Whisper AI"""
+            """Start subtitle generation using the selected AI backend."""
             try:
                 options = self._collect_common_options()
+                options["ai_backend"] = (
+                    str(self.ai_backend_combo.currentData() or "auto") if self.ai_backend_combo else "auto"
+                )
                 options["model_size"] = self.whisper_model_combo.currentText()
                 options["language"] = self.whisper_language_input.text().strip() or None
                 options["output_format"] = "srt"  # Currently only SRT supported
-                
-                # Check if Whisper is available
-                if whisper is None:
-                    QMessageBox.warning(
-                        self,
-                        "Whisper Not Installed",
-                        "Whisper AI is not installed. Please install it with:\n\n"
-                        "pip install openai-whisper\n\n"
-                        "Also requires: pip install pysubs2"
-                    )
-                    return
-                
+
                 if pysubs2 is None:
                     QMessageBox.warning(
                         self,
-                        "pysubs2 Not Installed",
-                        "pysubs2 library is not installed. Please install it with:\n\n"
+                        "pysubs2/pysub2 Not Installed",
+                        "pysubs2 library (sometimes searched as pysub2) is not installed.\n\n"
                         "pip install pysubs2"
+                    )
+                    return
+
+                backend_probe = SubtitleProcessor()
+                selected_backend, backend_reason = backend_probe._resolve_transcription_backend(
+                    str(options.get("ai_backend", "auto"))
+                )
+                if not selected_backend:
+                    QMessageBox.warning(
+                        self,
+                        "AI Backend Not Available",
+                        backend_reason,
                     )
                     return
                 
@@ -4623,7 +5830,8 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 reply = QMessageBox.question(
                     self,
                     "Generate Subtitles",
-                    f"Generate subtitles using Whisper '{model_size}' model?\n\n"
+                    f"Generate subtitles using backend '{selected_backend}' and model '{model_size}'?\n\n"
+                    f"Backend selection: {backend_reason}\n"
                     f"Model: {model_info.get(model_size, 'Unknown')}\n\n"
                     f"Note: First run will download the model. "
                     f"Processing may take several minutes per video.",
@@ -4699,6 +5907,9 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
             try:
                 options = self._collect_common_options()
                 options["model_size"] = self.whisper_model_combo.currentText() if self.whisper_model_combo else "base"
+                options["sync_backend"] = (
+                    str(self.sync_backend_combo.currentData() or "auto") if self.sync_backend_combo else "auto"
+                )
                 options["sync_language"] = self.sync_language_input.text().strip() if self.sync_language_input else ""
                 options["output_suffix"] = "_synced"
                 options["sync_max_offset_seconds"] = 300.0
@@ -4706,32 +5917,33 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 if self.sync_overwrite_checkbox is not None:
                     options["overwrite"] = self.sync_overwrite_checkbox.isChecked()
 
-                if whisper is None:
-                    QMessageBox.warning(
-                        self,
-                        "Whisper Not Installed",
-                        "Whisper AI is not installed. Please install it with:\n\n"
-                        "pip install openai-whisper",
-                    )
-                    return
-
                 if pysubs2 is None:
                     QMessageBox.warning(
                         self,
-                        "pysubs2 Not Installed",
-                        "pysubs2 is not installed. Please install it with:\n\n"
+                        "pysubs2/pysub2 Not Installed",
+                        "pysubs2 (aka pysub2) is not installed. Please install it with:\n\n"
                         "pip install pysubs2",
+                    )
+                    return
+
+                sync_probe = SubtitleProcessor()
+                selected_sync_backend, sync_reason = sync_probe._resolve_sync_backend(
+                    str(options.get("sync_backend", "auto"))
+                )
+                if not selected_sync_backend:
+                    QMessageBox.warning(
+                        self,
+                        "Sync Backend Not Available",
+                        sync_reason,
                     )
                     return
 
                 reply = QMessageBox.question(
                     self,
                     "Sync Subtitles to Audio",
-                    "This will use Whisper AI to transcribe audio, compute the timing offset\n"
-                    "between your existing subtitle file and the actual speech, then shift\n"
-                    "all subtitle timestamps to match.\n\n"
-                    "No new subtitles will be generated. Sync quality will be verified\n"
-                    "and reported when complete.\n\n"
+                    f"Sync backend: {selected_sync_backend} ({sync_reason})\n\n"
+                    "This will align existing sidecar subtitles to the video audio timeline.\n"
+                    "No new subtitles will be generated.\n\n"
                     "Continue?",
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                     QMessageBox.StandardButton.Yes,
@@ -5430,6 +6642,8 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
             ui_state = {
                 "folders": folders,
                 "target_files": target_files,
+                "selected_folders": [item.text() for item in self.folder_list.selectedItems()],
+                "selected_targets": [item.text() for item in self.target_file_list.selectedItems()],
                 "manual_sidecars": self.manual_sidecars_by_video,
                 "recursive": self.recursive_checkbox.isChecked(),
                 "overwrite": self.overwrite_checkbox.isChecked(),
@@ -5445,6 +6659,17 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 "organize_tv": self.organize_tv_checkbox.isChecked(),
                 "organize_rules_path": self.organize_rules_input.text(),
                 "repair_backup": self.repair_backup_checkbox.isChecked(),
+                "convert_backend": self.convert_backend_combo.currentData(),
+                "repair_backend": self.repair_backend_combo.currentData(),
+                "ffmpeg_bin": self.ffmpeg_bin_input.text(),
+                "ffprobe_bin": self.ffprobe_bin_input.text(),
+                "mkvmerge_bin": self.mkvmerge_bin_input.text(),
+                "handbrake_bin": self.handbrake_bin_input.text(),
+                "makemkvcon_bin": self.makemkvcon_bin_input.text(),
+                "command_feedback": self.command_feedback_combo.currentData(),
+                "ffmpeg_loglevel": self.ffmpeg_loglevel_combo.currentData(),
+                "ffprobe_loglevel": self.ffprobe_loglevel_combo.currentData(),
+                "ai_backend": self.ai_backend_combo.currentData() if self.ai_backend_combo else "auto",
                 "whisper_model": self.whisper_model_combo.currentText() if self.whisper_model_combo else "base",
                 "whisper_language": self.whisper_language_input.text() if self.whisper_language_input else "",
                 "audio_lang_strategy": self.audio_lang_strategy_combo.currentData() if self.audio_lang_strategy_combo else "snippets",
@@ -5452,11 +6677,18 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                 "audio_lang_seconds": self.audio_lang_seconds_input.text() if self.audio_lang_seconds_input else "25",
                 "audio_lang_overwrite": self.audio_lang_overwrite_checkbox.isChecked() if self.audio_lang_overwrite_checkbox else False,
                 "audio_lang_detect_only": self.audio_lang_detect_only_checkbox.isChecked() if self.audio_lang_detect_only_checkbox else False,
+                "sync_backend": self.sync_backend_combo.currentData() if self.sync_backend_combo else "auto",
                 "sync_language": self.sync_language_input.text() if self.sync_language_input else "",
                 "sync_overwrite": self.sync_overwrite_checkbox.isChecked() if self.sync_overwrite_checkbox else False,
                 "hw_accel": self.hw_accel_checkbox.isChecked(),
                 "save_next_to_source": self.save_next_to_source_checkbox.isChecked(),
                 "custom_output_dir": self.custom_output_dir_input.text(),
+                "tools_tab_index": self.tools_tabs.currentIndex(),
+                "window_x": self.x(),
+                "window_y": self.y(),
+                "window_width": self.width(),
+                "window_height": self.height(),
+                "window_maximized": self.isMaximized(),
             }
             
             settings["ui_state"] = ui_state
@@ -5491,6 +6723,20 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
             for file_path in ui_state.get("target_files", []):
                 if file_path and Path(file_path).exists():
                     self.target_file_list.addItem(QListWidgetItem(file_path))
+
+            selected_folders = set(ui_state.get("selected_folders", []))
+            if selected_folders:
+                for i in range(self.folder_list.count()):
+                    item = self.folder_list.item(i)
+                    if item.text() in selected_folders:
+                        item.setSelected(True)
+
+            selected_targets = set(ui_state.get("selected_targets", []))
+            if selected_targets:
+                for i in range(self.target_file_list.count()):
+                    item = self.target_file_list.item(i)
+                    if item.text() in selected_targets:
+                        item.setSelected(True)
             
             # Restore manual sidecars
             manual_sidecars = ui_state.get("manual_sidecars", {})
@@ -5520,9 +6766,45 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
             self.organize_tv_checkbox.setChecked(ui_state.get("organize_tv", True))
             self.organize_rules_input.setText(ui_state.get("organize_rules_path", ""))
             self.repair_backup_checkbox.setChecked(ui_state.get("repair_backup", True))
+
+            convert_backend = ui_state.get("convert_backend", "auto")
+            convert_index = self.convert_backend_combo.findData(convert_backend)
+            if convert_index >= 0:
+                self.convert_backend_combo.setCurrentIndex(convert_index)
+
+            repair_backend = ui_state.get("repair_backend", "auto")
+            repair_index = self.repair_backend_combo.findData(repair_backend)
+            if repair_index >= 0:
+                self.repair_backend_combo.setCurrentIndex(repair_index)
+
+            self.ffmpeg_bin_input.setText(str(ui_state.get("ffmpeg_bin", self.ffmpeg_bin_input.text())))
+            self.ffprobe_bin_input.setText(str(ui_state.get("ffprobe_bin", self.ffprobe_bin_input.text())))
+            self.mkvmerge_bin_input.setText(str(ui_state.get("mkvmerge_bin", self.mkvmerge_bin_input.text())))
+            self.handbrake_bin_input.setText(str(ui_state.get("handbrake_bin", self.handbrake_bin_input.text())))
+            self.makemkvcon_bin_input.setText(str(ui_state.get("makemkvcon_bin", self.makemkvcon_bin_input.text())))
+
+            command_feedback = ui_state.get("command_feedback", "normal")
+            feedback_index = self.command_feedback_combo.findData(command_feedback)
+            if feedback_index >= 0:
+                self.command_feedback_combo.setCurrentIndex(feedback_index)
+
+            ffmpeg_level = ui_state.get("ffmpeg_loglevel", "warning")
+            ffmpeg_level_index = self.ffmpeg_loglevel_combo.findData(ffmpeg_level)
+            if ffmpeg_level_index >= 0:
+                self.ffmpeg_loglevel_combo.setCurrentIndex(ffmpeg_level_index)
+
+            ffprobe_level = ui_state.get("ffprobe_loglevel", "error")
+            ffprobe_level_index = self.ffprobe_loglevel_combo.findData(ffprobe_level)
+            if ffprobe_level_index >= 0:
+                self.ffprobe_loglevel_combo.setCurrentIndex(ffprobe_level_index)
             
             # Restore Whisper AI settings (only if AI is enabled)
             if self.use_ai and self.whisper_model_combo and self.whisper_language_input:
+                ai_backend = ui_state.get("ai_backend", "auto")
+                if self.ai_backend_combo is not None:
+                    ai_backend_index = self.ai_backend_combo.findData(ai_backend)
+                    if ai_backend_index >= 0:
+                        self.ai_backend_combo.setCurrentIndex(ai_backend_index)
                 whisper_model = ui_state.get("whisper_model", "base")
                 index = self.whisper_model_combo.findText(whisper_model)
                 if index >= 0:
@@ -5542,11 +6824,32 @@ For detailed information, see SUBTITLE_TOOL_HELP.md in the installation director
                     self.audio_lang_detect_only_checkbox.setChecked(bool(ui_state.get("audio_lang_detect_only", False)))
 
             if self.use_ai and self.sync_language_input:
+                if self.sync_backend_combo is not None:
+                    sync_backend = ui_state.get("sync_backend", "auto")
+                    sync_backend_index = self.sync_backend_combo.findData(sync_backend)
+                    if sync_backend_index >= 0:
+                        self.sync_backend_combo.setCurrentIndex(sync_backend_index)
                 self.sync_language_input.setText(str(ui_state.get("sync_language", "")))
                 if self.sync_overwrite_checkbox:
                     self.sync_overwrite_checkbox.setChecked(bool(ui_state.get("sync_overwrite", False)))
 
             self.hw_accel_checkbox.setChecked(bool(ui_state.get("hw_accel", False)))
+
+            tools_tab_index = int(ui_state.get("tools_tab_index", 0))
+            if 0 <= tools_tab_index < self.tools_tabs.count():
+                self.tools_tabs.setCurrentIndex(tools_tab_index)
+
+            if bool(ui_state.get("window_maximized", False)):
+                self.setWindowState(self.windowState() | Qt.WindowState.WindowMaximized)
+            else:
+                x = int(ui_state.get("window_x", self.x()))
+                y = int(ui_state.get("window_y", self.y()))
+                w = int(ui_state.get("window_width", self.width()))
+                h = int(ui_state.get("window_height", self.height()))
+                if w > 200 and h > 150:
+                    self.setGeometry(x, y, w, h)
+
+            self._refresh_dependency_status(log_missing=False, announce=False)
             
             self._log("Previous session restored from memory")
 
@@ -5592,7 +6895,17 @@ def cli_print_json(payload: Dict[str, object]) -> None:
 
 
 def run_cli_action(args: argparse.Namespace) -> int:
-    processor = SubtitleProcessor(log_callback=lambda m: print(f"[log] {m}"))
+    processor = SubtitleProcessor(
+        ffmpeg_bin=(args.ffmpeg_bin or None),
+        ffprobe_bin=(args.ffprobe_bin or None),
+        mkvmerge_bin=(args.mkvmerge_bin or None),
+        handbrake_bin=(args.handbrake_bin or None),
+        makemkvcon_bin=(args.makemkvcon_bin or None),
+        command_feedback=args.command_feedback,
+        ffmpeg_loglevel=args.ffmpeg_loglevel,
+        ffprobe_loglevel=args.ffprobe_loglevel,
+        log_callback=lambda m: print(f"[log] {m}"),
+    )
 
     deps = processor.check_dependencies()
     if not deps["ffmpeg_found"] or not deps["ffprobe_found"]:
@@ -5687,6 +7000,7 @@ def run_cli_action(args: argparse.Namespace) -> int:
             max_offset_seconds=max(10.0, args.max_offset),
             verification_tolerance_seconds=max(0.5, args.tolerance),
             output_root=args.output_root or None,
+            sync_backend=args.sync_backend,
         )
         cli_print_json(summary.to_dict())
         return 0
@@ -5719,6 +7033,29 @@ def build_parser() -> argparse.ArgumentParser:
         cmd = subparsers.add_parser(mode, help=f"Run {mode} operation in CLI mode")
         cmd.add_argument("--folders", nargs="+", required=True, help="One or more folders to process")
         cmd.add_argument("--no-recursive", action="store_true", help="Do not scan subfolders")
+        cmd.add_argument("--ffmpeg-bin", default="", help="Path or command name for ffmpeg")
+        cmd.add_argument("--ffprobe-bin", default="", help="Path or command name for ffprobe")
+        cmd.add_argument("--mkvmerge-bin", default="", help="Path or command name for mkvmerge (MKVToolNix)")
+        cmd.add_argument("--handbrake-bin", default="", help="Path or command name for HandBrakeCLI")
+        cmd.add_argument("--makemkvcon-bin", default="", help="Path or command name for makemkvcon")
+        cmd.add_argument(
+            "--command-feedback",
+            choices=["quiet", "normal", "verbose"],
+            default="normal",
+            help="How much command stderr/stdout feedback to print",
+        )
+        cmd.add_argument(
+            "--ffmpeg-loglevel",
+            choices=["quiet", "error", "warning", "info", "verbose"],
+            default="warning",
+            help="FFmpeg loglevel passed to ffmpeg commands",
+        )
+        cmd.add_argument(
+            "--ffprobe-loglevel",
+            choices=["quiet", "error", "warning", "info", "verbose"],
+            default="error",
+            help="FFprobe loglevel passed to ffprobe commands",
+        )
         if mode == "scan":
             cmd.add_argument(
                 "--only-with-embedded",
@@ -5759,6 +7096,12 @@ def build_parser() -> argparse.ArgumentParser:
             cmd.add_argument("--output-root", default="", help="Custom output folder (default: next to source)")
             cmd.add_argument("--model-size", default="base", help="Whisper model size")
             cmd.add_argument("--language", default="", help="Language hint for Whisper (e.g. en, es); blank = auto-detect")
+            cmd.add_argument(
+                "--sync-backend",
+                choices=["auto", "whisper-offset", "aeneas"],
+                default="auto",
+                help="Backend for subtitle sync",
+            )
             cmd.add_argument("--max-offset", type=float, default=300.0, help="Maximum offset in seconds to consider (default: 300)")
             cmd.add_argument("--tolerance", type=float, default=2.0, help="Verification coverage tolerance in seconds (default: 2.0)")
         if mode == "remove":

@@ -2,7 +2,7 @@ $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $venvPython = Join-Path $scriptDir "venv\Scripts\python.exe"
-$subtitleTool = Join-Path $scriptDir "subtitle_tool.py"
+$subtitleTool = Join-Path $scriptDir "subtitle_ui.py"
 
 Set-Location $scriptDir
 
@@ -20,7 +20,7 @@ Write-Host "Using virtual environment Python: $venvPython" -ForegroundColor Gray
 Write-Host "Using subtitle script: $subtitleTool" -ForegroundColor Gray
 Write-Host ""
 
-& $venvPython $subtitleTool gui
+& $venvPython $subtitleTool
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""

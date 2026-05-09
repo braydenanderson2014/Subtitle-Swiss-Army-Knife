@@ -1,0 +1,34 @@
+﻿=================================================================
+  Subtitle Tool Installer — Verbose Log
+  Date    : 2026-03-25 13:42:20
+  Script  : D:\Subtitle\install_all_windows.ps1
+  User    : brayd  Machine: PCSP-2UA8101KHW
+  OS      : Microsoft Windows NT 10.0.26200.0
+  PS      : 5.1.26100.7705
+=================================================================
+
+
+[13:42:20] === Environment ===
+[13:42:20]  Script dir  : D:\Subtitle
+[13:42:20]  Script path : D:\Subtitle\install_all_windows.ps1
+[13:42:20]  Working dir : D:\Subtitle
+[13:42:20]  Transcript  : D:\Subtitle\install_all_windows.log
+[13:42:20]  Verbose log : D:\Subtitle\install_verbose.log
+[13:42:20]  Script drive: D:  System drive: C:
+[13:42:20]  Manifest    : D:\Subtitle\.install_manifest.json
+[13:42:20]  Venv path   : D:\Subtitle\venv
+[13:42:20]  App script  : D:\Subtitle\subtitle_tool.py
+[13:42:20]  PS edition  : Desktop  PS version: 5.1.26100.7705
+[13:42:20]  OS          : Microsoft Windows NT 10.0.26200.0
+[13:42:20]  CPU cores   : 12
+[13:42:20]  User        : brayd  Admin: False
+[13:42:20]  Python cmd  : C:\Users\brayd\AppData\Local\Programs\Python\Python311\python.exe
+[13:42:20]  Py launcher : C:\Windows\py.exe
+[13:42:20]  TMPDIR      : 
+[13:42:20]  TEMP        : D:/Temp
+[13:42:20]  TMP         : D:/Temp
+[13:42:20]  PIP_CACHE   : 
+[13:42:20]  PATH(process): C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\System32;C:\Windows;C:\Windows\System32\wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\cloudflared;C:\Program Files\Git\cmd;C:\Program Files\dotnet\;C:\Program Files\gsudo\Current;C:\Program Files (x86)\Microsoft SQL Server\160\DTS\Binn\;C:\ProgramData\chocolatey\bin;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\nodejs\;C:\Program Files\FileBot\;C:\Program Files (x86)\AOMEI\AOMEI Backupper\8.0.0;C:\Program Files\Sunshine;C:\Program Files\Sunshine\tools;C:\Program Files\MKVToolNix;C:\Program Files (x86)\MakeMKV;C:\Program Files\eSpeak NG\;C:\Users\brayd\AppData\Local\Programs\Python\Python311\Scripts\;C:\Users\brayd\AppData\Local\Programs\Python\Python311\;C:\Users\brayd\AppData\Local\Programs\Python\Python312\Scripts\;C:\Users\brayd\AppData\Local\Programs\Python\Python312\;C:\Users\brayd\.local\bin;C:\Users\brayd\AppData\Local\Programs\Python\Python314\Scripts\;C:\Users\brayd\AppData\Local\Programs\Python\Python314\;C:\Users\brayd\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\brayd\AppData\Local\Programs\Python\Python39\;C:\Users\brayd\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\brayd\AppData\Local\Programs\Python\Python310\;C:\Users\brayd\AppData\Local\Microsoft\WindowsApps;C:\Users\brayd\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\brayd\AppData\Local\GitHubDesktop\bin;C:\Users\brayd\AppData\Local\Programs\Ollama;C:\Users\brayd\AppData\Roaming\npm;C:\Users\brayd\AppData\Local\Python\bin;D:\PythonLibraries\OtterForge\.venv\Scripts
+[13:42:20]  PATH(machine): C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\System32;C:\Windows;C:\Windows\System32\wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\cloudflared;C:\Program Files\Git\cmd;C:\Program Files\dotnet\;C:\Program Files\gsudo\Current;C:\Program Files (x86)\Microsoft SQL Server\160\DTS\Binn\;C:\ProgramData\chocolatey\bin;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\nodejs\;C:\Program Files\FileBot\;C:\Program Files (x86)\AOMEI\AOMEI Backupper\8.0.0;C:\Program Files\Sunshine;C:\Program Files\Sunshine\tools;C:\Program Files\MKVToolNix;C:\Program Files (x86)\MakeMKV;C:\Program Files\eSpeak NG\
+[13:42:20]  PATH(user)   : C:\Users\brayd\AppData\Local\Programs\Python\Python311\Scripts\;C:\Users\brayd\AppData\Local\Programs\Python\Python311\;C:\Users\brayd\AppData\Local\Programs\Python\Python312\Scripts\;C:\Users\brayd\AppData\Local\Programs\Python\Python312\;C:\Users\brayd\.local\bin;C:\Users\brayd\AppData\Local\Programs\Python\Python314\Scripts\;C:\Users\brayd\AppData\Local\Programs\Python\Python314\;C:\Users\brayd\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\brayd\AppData\Local\Programs\Python\Python39\;C:\Users\brayd\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\brayd\AppData\Local\Programs\Python\Python310\;C:\Users\brayd\AppData\Local\Microsoft\WindowsApps;C:\Users\brayd\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\brayd\AppData\Local\GitHubDesktop\bin;C:\Users\brayd\AppData\Local\Programs\Ollama;C:\Users\brayd\AppData\Roaming\npm;C:\Users\brayd\AppData\Local\Python\bin;D:\PythonLibraries\OtterForge\.venv\Scripts
+[13:42:20]  
